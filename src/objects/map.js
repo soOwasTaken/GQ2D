@@ -1,7 +1,6 @@
 import k from "../main";
 
 export function map() {
-
   k.addLevel(
     [
       "                                                  ",
@@ -46,5 +45,5 @@ export function map() {
     }
   );
 
-    return map;
+  return map;
 }

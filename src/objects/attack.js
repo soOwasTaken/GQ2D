@@ -11,7 +11,7 @@ export function playAttackAnimation() {
             anim: "1",
         }),
         k.origin("center"),
-        k.scale(2),
+        k.scale(0.5),
         "attackAnimation",
         k.follow(player, vec2(-4, 9)),
         k.rotate(0),

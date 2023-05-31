@@ -11,8 +11,16 @@ export default k;
 loadAssets();
 loadMainScene();
 
-  k.on("death", "player", (e) => {
-    k.go("lose");
-  });
+scene("lose", (score) => {
+  add([sprite("rogue"), pos(width() / 2, height() / 2 - 108), scale(3)]);
+
+  // go back to game with space is pressed
+  onKeyPress("space", () => go("main"));
+  onClick(() => go("main"));
+});
+
+k.on("death", "player", (e) => {
+  k.go("lose");
+});
 
 k.go("main");

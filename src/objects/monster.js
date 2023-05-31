@@ -1,6 +1,6 @@
 import k from "../main";
 import { Player } from "../objects/player";
-
+import { monsterWeapon } from "./monsterWeapon";
 export let monsters = [];
 
 export function createMonster() {
@@ -26,37 +26,37 @@ export function createMonster() {
     k.origin("center"),
     k.health(30),
     "enemy",
+    k.solid(), // Add this line
+    { direction: 1, isAttacking: false },
   ]);
 
-
-  player.onCollide("enemy", (enemy) => {
-    player.hurt(5);
-  });
-
   // Update function to move the monster towards the player
+  let isMonsterAttacking = false; // Add this flag
+
   monster.onUpdate(() => {
     if (!player.exists()) return;
+    if (isMonsterAttacking || monster.isAttacking) return;
 
     const dir = player.pos.sub(monster.pos).unit();
     monster.move(dir.scale(ENEMY_SPEED));
 
     if (monster.pos.x > player.pos.x) {
-      // Flip the sprite horizontally
       monster.flipX(true);
+      monster.direction = -1; // the monster is facing left
     }
     if (monster.pos.x < player.pos.x) {
-      // Flip the sprite horizontally
       monster.flipX(false);
+      monster.direction = 1; // the monster is facing right
     }
   });
 
   // Handle interactions with the player or other logic here
-  
+  monsterWeapon(monster);
   return monster;
 }
 
 export function spawnMonsters() {
-  const maxMonsters = 100; // Maximum number of monsters
+  const maxMonsters = 30; // Maximum number of monsters
   const interval = 2; // Spawn interval in seconds
   let count = 0;
 

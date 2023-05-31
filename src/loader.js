@@ -92,8 +92,20 @@ export function loadAssets() {
       width: 16,
       height: 80,
     },
+    bone: {
+      x: 16,
+      y: 16,
+      width: 16,
+      height: 32,
+    },
+    bone_axe: {
+      x: 48,
+      y: 16,
+      width: 16,
+      height: 32,
+    },
   });
-  k.loadSprite("skel1","sprites/skel1.png", {
+  k.loadSprite("skel1", "sprites/skel1.png", {
     sliceX: 6,
     anims: {
       run: {

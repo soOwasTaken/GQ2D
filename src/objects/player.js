@@ -1,5 +1,5 @@
 import k from "../main";
-import { createGameOverScene } from "../scenes/gameoverScene";
+
 let player;
 
 export function Player() {
@@ -14,9 +14,13 @@ export function Player() {
     k.solid(),
     k.scale(0.8),
     k.origin("bot"),
-    "player",
+    "player", // this is a tag that we can get using k.get
     k.health(100),
   ]);
+
+  player.on("destroy", () => {
+    player = null;
+  });
 
   player.onUpdate(() => {
     camPos(player.pos);
@@ -57,12 +61,13 @@ export function Player() {
     }
   });
 
-  player.onCollide("enemy", (e) => {
-    player.hurt(1);
+  k.on("death", "player", (e) => {
+    go("lose");
   });
 
-  k.on("death", "player", (e) => {
-    destroy(e);
-  });
+  return player;
+}
+
+export function getPlayer() {
   return player;
 }
