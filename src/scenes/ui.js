@@ -1,61 +1,113 @@
 import k from "../main";
 import { Player } from "../objects/player";
+import { spawnMonsters } from "../objects/monster";
 
-let healthBar; // Declare the health bar variable globally
+const PlayerBaseHealth = 100;
 
 function createHealthBar() {
   const player = Player();
 
-  if (!player) {
-    return; // Return if player does not exist
-  }
-
-  if (!healthBar) {
-    const healthBarWidth = player.health * 2; // Adjust the width based on player's health
-    healthBar = k.add([
-      k.rect(healthBarWidth, 10),
-      k.pos(10, 10),
-      k.color(0, 1, 0),
-      k.layer("ui"),
-      k.fixed(),
-      {
-        width: healthBarWidth, // Set the initial width based on player's health
-      },
-    ]);
-  }
-
-  // Update the width and color of the health bar based on player's health
-  healthBar.width = player.health * 2;
-  if (player.health > 50) {
-    healthBar.color = k.rgb(0, 1, 0); // Green
-  } else if (player.health > 20) {
-    healthBar.color = k.rgb(1, 1, 0); // Yellow
-  } else {
-    healthBar.color = k.rgb(1, 0, 0); // Red
-  }
-}
-
-function createTimer() {
-  let time = 0;
-
-  const timerLabel = k.add([
-    k.text("0", 4),
-    k.pos(10, 30),
-    k.layer("ui"),
-    k.fixed(),
-    k.scale(0.3),
+  const maxHealthBar = add([
+    rect(width() / 2, 12),
+    pos(10, 10),
+    outline(2),
+    color(0, 0, 0),
+    fixed(),
+    layer("ui"),
+    scale(0.3),
   ]);
 
-  k.loop(1, () => {
-    time += 1;
-    timerLabel.text = time.toString();
+  const healthbar = add([
+    rect(width() / 2, 12),
+    pos(10, 10),
+    color(107, 201, 108),
+    fixed(),
+    scale(0.3),
+    {
+      max: PlayerBaseHealth,
+      set(hp) {
+        const percentage = hp / this.max;
+        this.width = (width() / 2) * percentage;
+        this.color = getColorByPercentage(percentage);
+        this.flash = true;
+      },
+    },
+    layer("ui"),
+  ]);
+
+  const healthText = add([
+    text(player.hp().toString(), maxHealthBar.width, {
+      size: maxHealthBar.height,
+      width: maxHealthBar.width,
+      textAlign: "top",
+    }),
+    pos((maxHealthBar.pos.x + 25), (maxHealthBar.pos.y - 10)),
+    fixed(),
+    layer("ui"),
+    scale(0.3),
+    {
+      update() {
+        this.text = player.hp().toString();
+      },
+    },
+  ]);
+
+  player.onHurt(() => {
+    healthbar.set(player.hp());
   });
+}
+
+
+function createTimer() {
+  let seconds = 0;
+  let minutes = 0;
+
+  const timerLabel = add([
+    text("00:00", 4),
+    pos(10, 30),
+    layer("ui"),
+    fixed(),
+    scale(0.3),
+  ]);
+
+  loop(1, () => {
+    seconds += 1;
+    if (seconds >= 60) {
+      seconds = 0;
+      minutes += 1;
+    }
+    const formattedTime = `${padZero(minutes)}:${padZero(seconds)}`;
+    timerLabel.text = formattedTime;
+  });
+
+  action(() => debug.log("FPS: " + debug.fps()));
 
   return timerLabel;
 }
 
+function padZero(num) {
+  return num.toString().padStart(2, "0");
+}
+
+function getColorByPercentage(percentage) {
+  const startColor = [107, 201, 108]; // Green color
+  const endColor = [201, 107, 107]; // Red color
+
+  const color = [];
+
+  for (let i = 0; i < 3; i++) {
+    const startValue = startColor[i];
+    const endValue = endColor[i];
+    const value = Math.round(startValue + (endValue - startValue) * percentage);
+    color.push(value);
+  }
+
+  return rgb(...color);
+}
+
 export function initUI() {
-  k.layers(["game", "ui"], "ui"); // Switch to the "ui" layer as the active layer
+  layers(["game", "ui"], "ui");
   createHealthBar();
-  createTimer();
+  const timerLabel = createTimer();
+  spawnMonsters(timerLabel);
 }

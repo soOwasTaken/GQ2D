@@ -8,14 +8,14 @@ export function Player() {
   }
 
   player = k.add([
-    k.pos(120, 80),
+    k.pos(width() / 2, height() / 2),
     k.sprite("rogue", { anim: "idle" }),
-    k.area({ width: 39, height: 81, offset: k.vec2(0, 6) }),
+    k.area({ width: 15, height: 40, offset: k.vec2(0, 6) }),
     k.solid(),
-    k.scale(0.8),
-    k.origin("bot"),
+    k.scale(0.96),
+    k.origin("center"),
     "player", // this is a tag that we can get using k.get
-    k.health(100),
+    k.health(1),
   ]);
 
   player.on("destroy", () => {

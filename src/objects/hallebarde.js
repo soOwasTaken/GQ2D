@@ -4,77 +4,99 @@ import { Player } from "../objects/player";
 export function hallebarde() {
   const player = Player();
   let playerDirection = "right";
-  let canSwing = true; // Flag to track if the sword can be swung
+  let canThrust = true;
+  let thrustState = "idle";
 
-  const sword = k.add([
-    k.pos(),
-    k.sprite("bone_sword"),
-    origin("bot"),
-    k.rotate(0),
+  const spear = k.add([
+    k.pos(player.pos.x, player.pos.y),
+    k.sprite("bone_spear"),
+    k.origin("center"),
+    k.rotate(0), // Start with spear held horizontally
     k.scale(0.8),
-    k.follow(player, vec2(-4, 0)),
     "weapon",
-    k.area({ scale: 1 }),
-    swing(),
+    thrust(),
   ]);
 
-  sword.isSwinging = false;
-
   k.onKeyPress("space", () => {
-    if (canSwing) {
-      // Check if swinging is allowed
-      sword.isSwinging = true;
-      sword.startSwing();
-      canSwing = false; // Disable swinging temporarily
-      startCooldown(0.5); // Start cooldown for 0.5 seconds
+    if (canThrust && thrustState === "idle") {
+      canThrust = false;
+      thrustState = "raising";
     }
   });
 
   k.onKeyDown("right", () => {
-    sword.flipX(true);
-    sword.follow.offset = vec2(-4, 0);
-    playerDirection = "right";
+    if (thrustState === "idle") {
+      spear.rotate = 0;
+      spear.flipX(true);
+      playerDirection = "right";
+    }
   });
 
   k.onKeyDown("left", () => {
-    sword.flipX(false);
-    sword.follow.offset = vec2(4, 0);
-    playerDirection = "left";
+    if (thrustState === "idle") {
+      spear.flipX(false);
+      spear.rotate = 0; // Flip the spear manually instead of using flipX*
+      playerDirection = "left";
+    }
   });
 
-  function swing() {
-    let swingDuration = 0.5;
-    let swingAngle = 90;
-    let swingProgress = 0;
-    let hitMonsters = new Set();
+  function thrust() {
+    const raiseLowerDuration = 0.2;
+    const thrustDuration = 0.3;
+    const thrustDistance = 130;
+    const hitMonsters = new Set();
+    let actionProgress = 0;
 
     return {
-      id: "swing",
-      startSwing() {
-        swingProgress = 0;
-        hitMonsters.clear();
-      },
+      id: "thrust",
       update() {
-        if (this.isSwinging) {
-          let angleChange = (swingAngle / swingDuration) * k.dt();
-          this.angle +=
-            playerDirection === "right" ? angleChange : -angleChange;
-          swingProgress += k.dt();
+        this.pos.x = player.pos.x + (playerDirection === "right" ? 10 : -10);
+        this.pos.y = player.pos.y;
 
-          if (swingProgress < swingDuration) {
+        if (thrustState !== "idle") {
+          actionProgress += k.dt();
+        } else {
+          this.angle = playerDirection === "right" ? 0 : 0; // Reset the spear rotation based on the player's direction
+        }
+
+        switch (thrustState) {
+          case "raising":
+            this.angle =
+              playerDirection === "right"
+                ? 90 * (actionProgress / raiseLowerDuration)
+                : 180 + 90 * (actionProgress / raiseLowerDuration);
+            if (actionProgress >= raiseLowerDuration) {
+              this.angle = playerDirection === "right" ? 90 : 270; // Force the angle to be exactly 90 (or 270)
+              actionProgress = 0;
+              thrustState = "thrusting";
+            }
+            break;
+
+          case "thrusting":
+            let distanceChange = (thrustDistance / thrustDuration) * k.dt();
+            this.pos.x +=
+              playerDirection === "right" ? distanceChange : -distanceChange;
+            
+            const thrustSfx = k.add([
+              k.sprite("ThrustSfx", { anim: "hit" }),
+              k.pos(this.pos.x, this.pos.y),
+              k.origin("center"),
+              k.scale(1),
+              k.opacity(0.4),
+              k.lifespan(0.25),
+              ]);
+
+            if (playerDirection === "left") {
+              thrustSfx.flipX();
+              }
+
+            // deal damage to enemies in a front line where the player is facing
             k.every("enemy", (enemy) => {
-              let dist = enemy.pos.sub(this.pos).len();
-              if (dist < swingAngle) {
-                let angle = Math.atan2(
-                  enemy.pos.y - this.pos.y,
-                  enemy.pos.x - this.pos.x
-                );
+              let dist = Math.abs(enemy.pos.x - this.pos.x);
+              if (dist < 50) {
                 if (
-                  (playerDirection === "right" &&
-                    angle >= -Math.PI / 4 &&
-                    angle <= Math.PI / 4) ||
-                  (playerDirection === "left" &&
-                    (angle >= (3 * Math.PI) / 4 || angle <= (-3 * Math.PI) / 4))
+                  (playerDirection === "right" && enemy.pos.x > this.pos.x) ||
+                  (playerDirection === "left" && enemy.pos.x < this.pos.x)
                 ) {
                   if (!hitMonsters.has(enemy)) {
                     hitMonsters.add(enemy);
@@ -92,22 +114,46 @@ export function hallebarde() {
                         value: -damage,
                       },
                     ]);
-
                     damageText.onUpdate(() => {
                       damageText.move(0, -40 * k.dt());
                     });
+                    k.add([
+                      k.sprite("hit_thrust", { anim: "hit" }),
+                      k.pos(
+                        playerDirection === "right"
+                          ? this.pos.x + 30
+                          : this.pos.x - 30,
+                        this.pos.y
+                      ),
+                      k.origin("center"),
+                      k.lifespan(0.3), // Adjust as necessary
+                    ]);
+
+                    
                   }
                 }
               }
             });
-          }
 
-          if (swingProgress >= swingDuration) {
-            this.isSwinging = false;
-            this.angle = 0;
-            swingProgress = 0;
-            canSwing = true; // Enable swinging again
-          }
+            if (actionProgress >= thrustDuration) {
+              actionProgress = 0;
+              thrustState = "lowering";
+              hitMonsters.clear();
+            }
+            break;
+
+          case "lowering":
+            this.angle =
+              playerDirection === "right"
+                ? 90 - 90 * (actionProgress / raiseLowerDuration)
+                : 270 + 90 * (actionProgress / raiseLowerDuration);
+            if (actionProgress >= raiseLowerDuration) {
+              this.angle = playerDirection === "right" ? 0 : 0; // Force the angle to be exactly 0 (or 180)
+              actionProgress = 0;
+              thrustState = "idle";
+              canThrust = true;
+            }
+            break;
         }
       },
     };
@@ -120,10 +166,9 @@ export function hallebarde() {
     destroy(e);
   });
 
-  // Cooldown function to enable swinging after a certain duration
   function startCooldown(duration) {
     k.wait(duration, () => {
-      canSwing = true;
+      canThrust = true;
     });
   }
 }

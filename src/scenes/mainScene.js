@@ -15,8 +15,15 @@ export function mainScene() {
     ],
     "game"
   ); // "game" is the default layer
+  let background = k.add([
+    k.sprite("TEST"),
+    // Make the background centered on the screen
+    k.pos(16,16),
+    // Allow the background to be scaled
+    k.scale(1),
+    // Keep the background position fixed even when the camera moves
+  ]);
   map();
-  spawnMonsters();
   //   createMonster(); // to spawn a single monster
   Player();
   initUI();

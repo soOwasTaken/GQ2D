@@ -53,7 +53,11 @@ export function loadAssets() {
   });
 
   k.loadSprite("monster", "sprites/monster1.png");
-
+  k.loadSprite("TEST", "sprites/TEST.png");
+  k.loadFont("apl386", "sprites/apl386.ttf", {
+    outline: 4,
+    filter: "linear",
+  });
   k.loadSprite("attack", "sprites/attack.png", {
     sliceX: 10,
     anims: {
@@ -86,7 +90,7 @@ export function loadAssets() {
   });
 
   k.loadSpriteAtlas("sprites/Bone.png", {
-    bone_sword: {
+    bone_spear: {
       x: 0,
       y: 0,
       width: 16,
@@ -116,4 +120,30 @@ export function loadAssets() {
       },
     },
   });
+
+    k.loadSprite("hit_thrust", "sprites/hit_thrust.png", {
+      sliceX: 4,
+      anims: {
+        hit: {
+          from: 0,
+          to: 3,
+          loop: false,
+          speed: 15,
+        },
+      },
+    });
+  
+      k.loadSprite("ThrustSfx", "sprites/ThrustSfx.png", {
+        sliceX: 7,
+        anims: {
+          hit: {
+            from: 0,
+            to: 6,
+            loop: false,
+            speed: 100,
+          },
+        },
+      });
 }
+
+
