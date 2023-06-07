@@ -15,8 +15,9 @@ export default k;
 loadAssets();
 loadMainScene();
 
-scene("lose", (score) => {
+let finalTime; // Declare finalTime variable outside of the initUI function
 
+scene("lose", (score) => {
   // Add the "Game Over" text object with text() component and options
   const gameOverText = add([
     text("Game Over", {
@@ -24,17 +25,32 @@ scene("lose", (score) => {
       size: 96,
       color: rgb(255, 0, 0),
       origin: "center",
-      anchor:("centertop")
+      anchor: "centertop",
     }),
   ]);
 
-  // go back to game with space is pressed
+  // Add finalTime text object below the "Game Over" text
+  const finalTimeText = add([
+    text(finalTime, {
+      font: "apl386",
+      size: 48,
+      color: rgb(255, 255, 255),
+      origin: "center",
+      anchor: "center",
+    }),
+  ]);
+
+  // Go back to the main scene when space is pressed
   onKeyPress("space", () => go("main"));
   onClick(() => go("main"));
 });
 
 k.on("death", "player", (e) => {
+  clearInterval(timerInterval); // Stop the timer
+  finalTime = timerLabel.text; // Store the final time in the finalTime variable
   k.go("lose");
 });
+
+let gameIsPaused = false;
 
 k.go("main");

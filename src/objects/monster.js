@@ -1,6 +1,8 @@
 import k from "../main";
 import { Player } from "../objects/player";
 import { monsterWeapon } from "./monsterWeapon";
+import { increasePlayerXP } from "./levelup";
+import { isGamePaused, isSpawningAllowed, isLevelUpPaused } from "./pause";
 export let monsters = [];
 
 export function createMonster() {
@@ -48,9 +50,10 @@ export function createMonster() {
         return;
       }
     }
-
+    if (!isGamePaused()) {
     const dir = player.pos.sub(monster.pos).unit();
-    monster.move(dir.scale(ENEMY_SPEED));
+      monster.move(dir.scale(ENEMY_SPEED));
+    }
 
     if (monster.pos.x > player.pos.x) {
       monster.flipX(true);
@@ -71,35 +74,39 @@ export function spawnMonsters(timerLabel) {
   let count = 0;
 
   function spawn() {
-    createMonster();
-    count++;
+    if (isSpawningAllowed()) {
+      createMonster();
+      count++;
 
-    k.on("death", "enemy", (e) => {
-      const index = monsters.indexOf(e);
-      if (index > -1) {
-        monsters.splice(index, 1);
+      k.on("death", "enemy", (e) => {
+        const index = monsters.indexOf(e);
+        if (index > -1) {
+          increasePlayerXP(50);
+          monsters.splice(index, 1);
+          count--;
+        }
+      });
+
+      if (count >= maxMonsters) {
+        return; // Stop spawning if the maximum number of monsters is reached
       }
-      count--;
-    });
 
-    if (count >= maxMonsters) {
-      return; // Stop spawning if the maximum number of monsters is reached
+      const seconds = Number(timerLabel.text.split(":")[1]);
+      const minutes = Number(timerLabel.text.split(":")[0]);
+      const totalSeconds = minutes * 60 + seconds;
+
+      // Adjust spawn interval based on elapsed time
+      // E.g., halve the spawn interval every 10 seconds
+      const spawnInterval = Math.max(
+        0.1,
+        2 * Math.pow(0.9, Math.floor(totalSeconds / 10))
+      );
+      k.wait(spawnInterval, spawn);
+    } else {
+      // Wait a short period of time and then try spawning again
+      k.wait(0.1, spawn);
     }
-
-    const seconds = Number(timerLabel.text.split(":")[1]);
-    const minutes = Number(timerLabel.text.split(":")[0]);
-    const totalSeconds = minutes * 60 + seconds;
-
-    // Adjust spawn interval based on elapsed time
-    // E.g., halve the spawn interval every 10 seconds
-    const spawnInterval = Math.max(
-      0.1,
-      2 * Math.pow(0.9, Math.floor(totalSeconds / 10))
-    );
-
-    k.wait(spawnInterval, spawn);
   }
-
   spawn();
 }
 

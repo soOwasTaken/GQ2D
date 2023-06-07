@@ -1,6 +1,6 @@
 import k from "../main";
 import { Player } from "../objects/player";
-
+import { isGamePaused, togglePause } from "./pause";
 export function hallebarde() {
   const player = Player();
   let playerDirection = "right";
@@ -25,18 +25,22 @@ export function hallebarde() {
   });
 
   k.onKeyDown("right", () => {
-    if (thrustState === "idle") {
-      spear.rotate = 0;
-      spear.flipX(true);
-      playerDirection = "right";
+    if (!isGamePaused()) {
+      if (thrustState === "idle") {
+        spear.rotate = 0;
+        spear.flipX(true);
+        playerDirection = "right";
+      }
     }
   });
 
   k.onKeyDown("left", () => {
-    if (thrustState === "idle") {
-      spear.flipX(false);
-      spear.rotate = 0; // Flip the spear manually instead of using flipX*
-      playerDirection = "left";
+    if (!isGamePaused()) {
+      if (thrustState === "idle") {
+        spear.flipX(false);
+        spear.rotate = 0; // Flip the spear manually instead of using flipX*
+        playerDirection = "left";
+      }
     }
   });
 
@@ -100,7 +104,7 @@ export function hallebarde() {
                 ) {
                   if (!hitMonsters.has(enemy)) {
                     hitMonsters.add(enemy);
-                    const damage = 10;
+                    const damage = 30;
                     enemy.hurt(damage);
                     const damageText = k.add([
                       k.text(`-${damage}`, {

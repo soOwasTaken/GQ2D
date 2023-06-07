@@ -1,7 +1,7 @@
 import k from "../main";
 import { Player } from "../objects/player";
 import { spawnMonsters } from "../objects/monster";
-
+import { isGamePaused } from "../objects/pause";
 const PlayerBaseHealth = 100;
 
 function createHealthBar() {
@@ -35,16 +35,24 @@ function createHealthBar() {
     layer("ui"),
   ]);
 
+    const healthLabel = add([
+      text("Health", 4),
+      pos(10, 2),
+      layer("ui"),
+      fixed(),
+      scale(0.1),
+    ]);
+
   const healthText = add([
     text(player.hp().toString(), maxHealthBar.width, {
       size: maxHealthBar.height,
       width: maxHealthBar.width,
       textAlign: "top",
     }),
-    pos((maxHealthBar.pos.x + 25), (maxHealthBar.pos.y - 10)),
+    pos((maxHealthBar.pos.x + 45), (maxHealthBar.pos.y - 5)),
     fixed(),
     layer("ui"),
-    scale(0.3),
+    scale(0.2),
     {
       update() {
         this.text = player.hp().toString();
@@ -57,6 +65,67 @@ function createHealthBar() {
   });
 }
 
+function createExperienceBar() {
+  const player = Player();
+  const maxExperience = 100;
+
+  const maxExpBar = add([
+    rect(width() / 2, 12),
+    pos(10, 30),
+    outline(2),
+    color(0, 0, 0),
+    fixed(),
+    layer("ui"),
+    scale(0.3),
+  ]);
+
+  const expBar = add([
+    rect(0, 12),
+    pos(10, 30),
+    color(128, 0, 128),
+    fixed(),
+    scale(0.3),
+    {
+      max: maxExperience,
+      set(xp) {
+        const percentage = xp / this.max;
+        this.width = (width() / 2) * percentage;
+      },
+    },
+    layer("ui"),
+  ]);
+
+    const expLabel = add([
+      text("XP", 4),
+      pos(10, 22),
+      layer("ui"),
+      fixed(),
+      scale(0.1),
+    ]);
+
+  const expText = add([
+    text(player.xp.toString(), maxExpBar.width, {
+      size: maxExpBar.height,
+      width: maxExpBar.width,
+      textAlign: "top",
+    }),
+    pos(maxExpBar.pos.x + 45, maxExpBar.pos.y - 5),
+    fixed(),
+    layer("ui"),
+    scale(0.2),
+    {
+      update() {
+        this.text = player.xp.toString();
+      },
+    },
+  ]);
+
+  player.action(() => {
+    expBar.set(player.xp);
+  });
+}
+
+
 
 function createTimer() {
   let seconds = 0;
@@ -64,20 +133,22 @@ function createTimer() {
 
   const timerLabel = add([
     text("00:00", 4),
-    pos(10, 30),
+    pos(10, 40),
     layer("ui"),
     fixed(),
     scale(0.3),
   ]);
 
   loop(1, () => {
-    seconds += 1;
-    if (seconds >= 60) {
-      seconds = 0;
-      minutes += 1;
+    if (!isGamePaused()) {
+      seconds += 1;
+      if (seconds >= 60) {
+        seconds = 0;
+        minutes += 1;
+      }
+      const formattedTime = `${padZero(minutes)}:${padZero(seconds)}`;
+      timerLabel.text = formattedTime;
     }
-    const formattedTime = `${padZero(minutes)}:${padZero(seconds)}`;
-    timerLabel.text = formattedTime;
   });
 
   action(() => debug.log("FPS: " + debug.fps()));
@@ -108,6 +179,7 @@ function getColorByPercentage(percentage) {
 export function initUI() {
   layers(["game", "ui"], "ui");
   createHealthBar();
+  createExperienceBar(); // Add this line
   const timerLabel = createTimer();
   spawnMonsters(timerLabel);
 }

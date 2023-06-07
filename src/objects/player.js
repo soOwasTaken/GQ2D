@@ -1,6 +1,7 @@
 import k from "../main";
-
+import { isGamePaused, togglePause, isLevelUpPaused } from "./pause";
 let player;
+
 
 export function Player() {
   if (player) {
@@ -15,7 +16,11 @@ export function Player() {
     k.scale(0.96),
     k.origin("center"),
     "player", // this is a tag that we can get using k.get
-    k.health(1),
+    k.health(100),
+    {
+      xp: 0,
+      level: 1,
+    },
   ]);
 
   player.on("destroy", () => {
@@ -29,25 +34,35 @@ export function Player() {
   const SPEED = 120;
 
   onKeyDown("right", () => {
-    player.flipX(false);
-    player.move(SPEED, 0);
+    if (!isGamePaused()) {
+      player.flipX(false);
+      player.move(SPEED, 0);
+    }
   });
 
   onKeyDown("left", () => {
-    player.flipX(true);
-    player.move(-SPEED, 0);
+    if (!isGamePaused()) {
+      player.flipX(true);
+      player.move(-SPEED, 0);
+    }
   });
 
   onKeyDown("up", () => {
-    player.move(0, -SPEED);
+    if (!isGamePaused()) {
+      player.move(0, -SPEED);
+    }
   });
 
   onKeyDown("down", () => {
-    player.move(0, SPEED);
+    if (!isGamePaused()) {
+      player.move(0, SPEED);
+    }
   });
 
   onKeyPress(["left", "right", "up", "down"], () => {
-    player.play("run");
+    if (!isGamePaused()) {
+      player.play("run");
+    }
   });
 
   onKeyRelease(["left", "right", "up", "down"], () => {
@@ -64,6 +79,13 @@ export function Player() {
   k.on("death", "player", (e) => {
     go("lose");
   });
+  let gameIsPaused = false;
+
+k.onKeyPress("p", () => {
+  if (!isLevelUpPaused()) {
+    togglePause();
+  }
+});
 
   return player;
 }

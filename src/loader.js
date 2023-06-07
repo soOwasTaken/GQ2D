@@ -121,29 +121,38 @@ export function loadAssets() {
     },
   });
 
-    k.loadSprite("hit_thrust", "sprites/hit_thrust.png", {
-      sliceX: 4,
-      anims: {
-        hit: {
-          from: 0,
-          to: 3,
-          loop: false,
-          speed: 15,
-        },
+  k.loadSprite("hit_thrust", "sprites/hit_thrust.png", {
+    sliceX: 4,
+    anims: {
+      hit: {
+        from: 0,
+        to: 3,
+        loop: false,
+        speed: 15,
       },
-    });
-  
-      k.loadSprite("ThrustSfx", "sprites/ThrustSfx.png", {
-        sliceX: 7,
-        anims: {
-          hit: {
-            from: 0,
-            to: 6,
-            loop: false,
-            speed: 100,
-          },
-        },
-      });
+    },
+  });
+
+  k.loadSprite("ThrustSfx", "sprites/ThrustSfx.png", {
+    sliceX: 7,
+    anims: {
+      hit: {
+        from: 0,
+        to: 6,
+        loop: false,
+        speed: 100,
+      },
+    },
+  });
+  k.loadSprite("LevelUp", "sprites/LevelUp.png", {
+    sliceX: 50,
+    anims: {
+      LevelUp: {
+        from: 0,
+        to: 49,
+        loop: false,
+        speed: 100,
+      },
+    },
+  });
 }
-
-
