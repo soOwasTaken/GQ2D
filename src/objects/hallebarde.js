@@ -57,7 +57,7 @@ export function hallebarde() {
     }
   });
 
-  k.onKeyDown("right", () => {
+  k.onKeyDown(["right","d"], () => {
     if (!isGamePaused()) {
       if (thrustState === "idle") {
         spear.rotate = 0;
@@ -67,7 +67,7 @@ export function hallebarde() {
     playerDirection = "right";
   });
 
-  k.onKeyDown("left", () => {
+  k.onKeyDown(["left","q"], () => {
     if (!isGamePaused()) {
       if (thrustState === "idle") {
         spear.flipX(false);

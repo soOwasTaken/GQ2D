@@ -22,7 +22,7 @@ export function Player() {
       level: 1,
       maxXP: 100,
       speed: 120,
-      maxLevel : 7,
+      maxLevel: 7,
     },
   ]);
 
@@ -34,27 +34,27 @@ export function Player() {
     camPos(player.pos);
   });
 
-  onKeyDown("right", () => {
+  onKeyDown(["right", "d"], () => {
     if (!isGamePaused()) {
       player.flipX(false);
       player.move(player.speed, 0);
     }
   });
 
-  onKeyDown("left", () => {
+  onKeyDown(["left", "q"], () => {
     if (!isGamePaused()) {
       player.flipX(true);
       player.move(-player.speed, 0);
     }
   });
 
-  onKeyDown("up", () => {
+  onKeyDown(["up", "z"], () => {
     if (!isGamePaused()) {
       player.move(0, -player.speed);
     }
   });
 
-  onKeyDown("down", () => {
+  onKeyDown(["down", "s"], () => {
     if (!isGamePaused()) {
       player.move(0, player.speed);
     }
@@ -63,22 +63,25 @@ export function Player() {
       debug.log("pos: " + mousePos());
     });
 
-  onKeyPress(["left", "right", "up", "down"], () => {
+  onKeyPress(["left", "right", "up", "down", "z", "q", "s", "d"], () => {
     if (!isGamePaused()) {
       player.play("run");
     }
   });
 
-  onKeyRelease(["left", "right", "up", "down"], () => {
-    if (
-      !isKeyDown("left") &&
-      !isKeyDown("right") &&
-      !isKeyDown("up") &&
-      !isKeyDown("down")
-    ) {
-      player.play("idle");
+  onKeyRelease(
+    ["left", "right", "up", "down", "z", "q", "s", "d"],
+    () => {
+      if (
+        !isKeyDown("left") &&
+        !isKeyDown("right") &&
+        !isKeyDown("up") &&
+        !isKeyDown("down")
+      ) {
+        player.play("idle");
+      }
     }
-  });
+  );
 
   k.on("death", "player", (e) => {
     go("lose");
