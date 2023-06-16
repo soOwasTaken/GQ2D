@@ -112,9 +112,9 @@ export function monsterBow(monster) {
           let followCircle = k.add([
             k.pos(flyingArrow.pos.x, flyingArrow.pos.y), // Set the initial position of the circle
             k.color(180, 0, 0), // Set the color of the circle to red with 0.2 opacity
-            k.circle(7), // Set the size of the circle
+            k.circle(8), // Set the size of the circle
             k.follow(flyingArrow, vec2(0, 0)), // Make the circle follow the flying arrow
-            k.opacity(0.25),
+            k.opacity(0.20),
             "followCircle",
           ]);
 
