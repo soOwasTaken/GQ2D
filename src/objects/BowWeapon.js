@@ -104,7 +104,7 @@ export function monsterBow(monster) {
             k.origin("center"),
             k.scale(0.8),
             k.rotate(Math.atan2(direction.y, direction.x) * (180 / Math.PI)),
-            k.move(direction, 100), // This arrow will move
+            k.move(direction, 150),
             k.outview({ destroy: true }),
             k.area({ width: 8, height: 16 }), // Adjust the arrow's collision area as needed
             "flyingArrow",
