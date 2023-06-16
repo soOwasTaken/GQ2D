@@ -115,6 +115,7 @@ export function monsterBow(monster) {
             k.circle(8), // Set the size of the circle
             k.follow(flyingArrow, vec2(0, 0)), // Make the circle follow the flying arrow
             k.opacity(0.2),
+            k.area(),
             k.outview({ destroy: true }),
             "followCircle",
           ]);
