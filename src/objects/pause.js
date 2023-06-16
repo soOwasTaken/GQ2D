@@ -1,3 +1,4 @@
+import k from "../main";
 import { monsterWeapon } from "./monsterWeapon";
 
 let gameIsPaused = false;
@@ -21,7 +22,7 @@ export function toggleLevelUpPause() {
   gameIsPaused = !gameIsPaused;
   let objs = get();
   objs.forEach((element) => {
-      element.paused = gameIsPaused;
+    element.paused = gameIsPaused;
   });
 }
 
@@ -34,10 +35,9 @@ export function setLevelUpPaused(value) {
 }
 
 export function setSpawningTo(value) {
-    allowSpawning = value;
+  allowSpawning = value;
 }
 
-
 export function isSpawningAllowed() {
-    return allowSpawning;
+  return allowSpawning;
 }

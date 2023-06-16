@@ -67,7 +67,6 @@ function createHealthBar() {
 
 function createExperienceBar() {
   const player = Player();
-  const maxExperience = 100;
 
   const maxExpBar = add([
     rect(width() / 2, 12),
@@ -86,22 +85,24 @@ function createExperienceBar() {
     fixed(),
     scale(0.3),
     {
-      max: maxExperience,
       set(xp) {
-        const percentage = xp / this.max;
-        this.width = (width() / 2) * percentage;
+        if (player.level < player.maxLevel) {
+          const percentage = xp / player.maxXP;
+          this.width = (width() / 2) * percentage;
+          this.color = rgb(128, 0, 128); // keep original color
+        }
       },
     },
     layer("ui"),
   ]);
 
-    const expLabel = add([
-      text("XP", 4),
-      pos(10, 22),
-      layer("ui"),
-      fixed(),
-      scale(0.1),
-    ]);
+  const expLabel = add([
+    text("XP", 4),
+    pos(10, 22),
+    layer("ui"),
+    fixed(),
+    scale(0.1),
+  ]);
 
   const expText = add([
     text(player.xp.toString(), maxExpBar.width, {
@@ -119,9 +120,26 @@ function createExperienceBar() {
       },
     },
   ]);
+  // New text for "Level Max"
+  const levelMaxText = add([
+    text("", 10), // initialize with empty string
+    pos(20, 30), // you can adjust the position as needed
+    layer("ui"),
+    fixed(),
+    scale(0.15),
+  ]);
 
-  player.action(() => {
-    expBar.set(player.xp);
+  player.onUpdate(() => {
+    if (player.level < 9) {
+      expBar.set(player.xp);
+      levelMaxText.text = ""; // clear the text
+    } else {
+      // If level is 3 or more, hide the XP bar and show "Level Max"
+      destroy(expBar);
+      destroy(maxExpBar);
+      destroy(expText);
+      levelMaxText.text = "Level Max"; // Show "Level Max"
+    }
   });
 }
 
@@ -151,8 +169,7 @@ function createTimer() {
     }
   });
 
-  action(() => debug.log("FPS: " + debug.fps()));
-
+  action(() => debug.log("FPS: " + debug.fps())); //comment for fps show
   return timerLabel;
 }
 
@@ -181,5 +198,5 @@ export function initUI() {
   createHealthBar();
   createExperienceBar(); // Add this line
   const timerLabel = createTimer();
-  spawnMonsters(timerLabel);
+  spawnMonsters(timerLabel); //In comment for new map setting up purpose
 }

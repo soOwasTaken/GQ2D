@@ -4,7 +4,7 @@ import { loadMainScene } from "./scenes/mainScene";
 import { Player } from "./objects/player";
 
 const k = kaboom({
-  scale: 4,
+  scale: 2.5,
   height: 800,
   weight: 800,
   background: [0, 0, 0],

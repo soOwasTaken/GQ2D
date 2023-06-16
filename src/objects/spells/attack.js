@@ -1,6 +1,7 @@
-import k from "../main";
-import { Player } from "../objects/player";
-import { monsters } from "../objects/monster";
+import k from "../../main";
+import { Player } from "../player";
+import { monsters } from "../monster";
+import { isGamePaused } from "../pause";
 
 export function playAttackAnimation() {
     const player = Player();
@@ -11,7 +12,7 @@ export function playAttackAnimation() {
             anim: "1",
         }),
         k.origin("center"),
-        k.scale(0.5),
+        k.scale(1),
         "attackAnimation",
         k.follow(player, vec2(-4, 9)),
         k.rotate(0),
@@ -30,7 +31,7 @@ export function playAttackAnimation() {
     
     // Check collision with monsters and deal damage
     k.onCollide("attackAnimation", "enemy", (p, e) => {
-      const damage = 10;
+      const damage = 5;
       e.hurt(damage);
       const damageText = k.add([
         k.text(`-${damage}`, {
@@ -48,12 +49,5 @@ export function playAttackAnimation() {
       damageText.onUpdate(() => {
         damageText.move(0, -40 * k.dt());
       });
-    });
-
-    k.on("hurt", "enemy", (e) => {
-        shake(3)
-    });
-    on("death", "enemy", (e) => {
-      destroy(e);
     });
 }

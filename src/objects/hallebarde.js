@@ -1,11 +1,44 @@
 import k from "../main";
-import { Player } from "../objects/player";
+import { Player, getPlayer } from "./player";
 import { isGamePaused, togglePause } from "./pause";
+import { getFreezingEnabled, playFreezingAnimation } from "./spells/freeze";
+import {
+  getCircleEnabled,
+  playCircleOfFireAnimation,
+} from "./spells/circleOfFire";
+
+let playerDirection = "right";
+
+function getAttackArea(playerDirection) {
+  const player = Player();
+  const playerPos = player.pos;
+  const width = 90; // Width of the attack area
+  const height = 30; // Height of the attack area
+
+  if (playerDirection === "right") {
+    return {
+      x: playerPos.x,
+      y: playerPos.y - height / 2,
+      width: width,
+      height: height,
+    };
+  }
+  if (playerDirection === "left") {
+    return {
+      x: playerPos.x - width,
+      y: playerPos.y - height / 2,
+      width: width,
+      height: height,
+    };
+  }
+}
+
 export function hallebarde() {
   const player = Player();
   let playerDirection = "right";
   let canThrust = true;
   let thrustState = "idle";
+  let circleEnabled = false;
 
   const spear = k.add([
     k.pos(player.pos.x, player.pos.y),
@@ -29,9 +62,9 @@ export function hallebarde() {
       if (thrustState === "idle") {
         spear.rotate = 0;
         spear.flipX(true);
-        playerDirection = "right";
       }
     }
+    playerDirection = "right";
   });
 
   k.onKeyDown("left", () => {
@@ -39,15 +72,15 @@ export function hallebarde() {
       if (thrustState === "idle") {
         spear.flipX(false);
         spear.rotate = 0; // Flip the spear manually instead of using flipX*
-        playerDirection = "left";
       }
     }
+    playerDirection = "left";
   });
 
   function thrust() {
     const raiseLowerDuration = 0.2;
-    const thrustDuration = 0.3;
-    const thrustDistance = 130;
+    const thrustDuration = 0.2;
+    const thrustDistance = 135;
     const hitMonsters = new Set();
     let actionProgress = 0;
 
@@ -80,7 +113,16 @@ export function hallebarde() {
             let distanceChange = (thrustDistance / thrustDuration) * k.dt();
             this.pos.x +=
               playerDirection === "right" ? distanceChange : -distanceChange;
-            
+
+            const attackArea = getAttackArea(playerDirection);
+            //  const hitbox = k.add([
+            //    k.rect(attackArea.width, attackArea.height),
+            //    k.pos(attackArea.x, attackArea.y),
+            //    k.color(255, 0, 0),
+            //    k.lifespan(0.1), // Set lifespan to 0.1s
+            //    k.opacity(0.3),
+            //  ]);
+
             const thrustSfx = k.add([
               k.sprite("ThrustSfx", { anim: "hit" }),
               k.pos(this.pos.x, this.pos.y),
@@ -88,24 +130,53 @@ export function hallebarde() {
               k.scale(1),
               k.opacity(0.4),
               k.lifespan(0.25),
-              ]);
+            ]);
 
             if (playerDirection === "left") {
               thrustSfx.flipX();
-              }
+            }
 
             // deal damage to enemies in a front line where the player is facing
             k.every("enemy", (enemy) => {
-              let dist = Math.abs(enemy.pos.x - this.pos.x);
-              if (dist < 50) {
+              const attackArea = getAttackArea(playerDirection);
+              const isWithinXBounds =
+                enemy.pos.x >= attackArea.x &&
+                enemy.pos.x <= attackArea.x + attackArea.width;
+              const isWithinYBounds =
+                enemy.pos.y >= attackArea.y &&
+                enemy.pos.y <= attackArea.y + attackArea.height;
+
+              if (isWithinXBounds && isWithinYBounds) {
                 if (
                   (playerDirection === "right" && enemy.pos.x > this.pos.x) ||
                   (playerDirection === "left" && enemy.pos.x < this.pos.x)
                 ) {
                   if (!hitMonsters.has(enemy)) {
                     hitMonsters.add(enemy);
-                    const damage = 30;
+                    const damage = 10;
                     enemy.hurt(damage);
+                    if (getFreezingEnabled()) {
+                      const randomChance = Math.random();
+                      if (randomChance <= 0.5) {
+                        playFreezingAnimation(enemy.pos);
+                        enemy.isFrozen = true;
+                        if (enemy.isFrozen == true) {
+                          enemy.originalEnemySpeed = enemy.enemySpeed;
+                          enemy.enemySpeed = 0;
+                          setTimeout(() => {
+                            enemy.isFrozen = false;
+                            enemy.enemySpeed = enemy.originalEnemySpeed;
+                          }, 3000);
+                        }
+                      }
+                    }
+                    if (getCircleEnabled()) {
+                      const randomChance = Math.random();
+                      if (randomChance <= 0.2) {
+                        playCircleOfFireAnimation(enemy.pos);
+                      }
+                    }
+
                     const damageText = k.add([
                       k.text(`-${damage}`, {
                         size: 8, // text size
@@ -121,6 +192,7 @@ export function hallebarde() {
                     damageText.onUpdate(() => {
                       damageText.move(0, -40 * k.dt());
                     });
+                    shake(3);
                     k.add([
                       k.sprite("hit_thrust", { anim: "hit" }),
                       k.pos(
@@ -132,13 +204,10 @@ export function hallebarde() {
                       k.origin("center"),
                       k.lifespan(0.3), // Adjust as necessary
                     ]);
-
-                    
                   }
                 }
               }
             });
-
             if (actionProgress >= thrustDuration) {
               actionProgress = 0;
               thrustState = "lowering";
@@ -163,9 +232,6 @@ export function hallebarde() {
     };
   }
 
-  k.on("hurt", "enemy", (e) => {
-    shake(3);
-  });
   k.on("death", "enemy", (e) => {
     destroy(e);
   });

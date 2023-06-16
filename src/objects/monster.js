@@ -1,12 +1,22 @@
 import k from "../main";
-import { Player } from "../objects/player";
+import { Player } from "./player";
 import { monsterWeapon } from "./monsterWeapon";
 import { increasePlayerXP } from "./levelup";
 import { isGamePaused, isSpawningAllowed, isLevelUpPaused } from "./pause";
+import { monsterBow } from "./BowWeapon";
 export let monsters = [];
 
+export let ENEMY_SPEED = 70;
+
+export function setEnemySpeed(value) {
+  ENEMY_SPEED = value;
+}
+
+export function getEnemySpeed() {
+  return ENEMY_SPEED;
+}
+
 export function createMonster() {
-  const ENEMY_SPEED = 75;
   const player = Player();
   const playerPos = player.pos;
   const minDistance = 40;
@@ -20,14 +30,27 @@ export function createMonster() {
   const monster = k.add([
     k.sprite("skel1", { anim: "run" }),
     k.pos(randomX, randomY),
-    k.area({ scale: 0.3 }),
+    k.area({ height: 55, weight: 40 }),
     k.scale(1),
     k.origin("center"),
     k.health(30),
     "enemy",
-    { direction: 1, isAttacking: false },
+    {
+      direction: 1,
+      isAttacking: false,
+      enemySpeed: getEnemySpeed(),
+      isAffectedByTornado: false,
+      isFrozen: false,
+    },
   ]);
-
+  // Create hitbox with reduced opacity
+  // const hitbox = k.add([
+  //   k.rect(30, 40),
+  //   k.pos(monster.pos.x, monster.pos.y),
+  //   k.color(1, 0, 0), // Adjust color and opacity as needed (this is red with 20% opacity)
+  //   k.origin("center"),
+  //   k.opacity(0.2),
+  // ]);
   monsters.push(monster);
 
   let isMonsterAttacking = false;
@@ -39,20 +62,23 @@ export function createMonster() {
   }
 
   monster.onUpdate(() => {
+    getEnemySpeed();
     if (!player.exists()) return;
     if (isMonsterAttacking || monster.isAttacking) return;
+    // hitbox.pos.x = monster.pos.x;
+    // hitbox.pos.y = monster.pos.y;
 
     for (let otherMonster of monsters) {
       if (monster === otherMonster) continue;
       const diff = monster.pos.sub(otherMonster.pos);
       if (euclideanDistance(monster.pos, otherMonster.pos) < minDistance) {
-        monster.move(diff.unit().scale(ENEMY_SPEED));
+        monster.move(diff.unit().scale(monster.enemySpeed));
         return;
       }
     }
     if (!isGamePaused()) {
-    const dir = player.pos.sub(monster.pos).unit();
-      monster.move(dir.scale(ENEMY_SPEED));
+      const dir = player.pos.sub(monster.pos).unit();
+      monster.move(dir.scale(monster.enemySpeed));
     }
 
     if (monster.pos.x > player.pos.x) {
@@ -64,13 +90,16 @@ export function createMonster() {
       monster.direction = 1;
     }
   });
-
-  monsterWeapon(monster);
+  if (player.level >= 2 && Math.random() < 0.3) {
+    monsterBow(monster); // range with bow monster only one can be enabled at time
+  } else {
+    monsterWeapon(monster); // melee monster
+  }
   return monster;
 }
 
 export function spawnMonsters(timerLabel) {
-  const maxMonsters = 250; // Maximum number of monsters
+  const maxMonsters = 100; // Maximum number of monsters
   let count = 0;
 
   function spawn() {
@@ -81,7 +110,7 @@ export function spawnMonsters(timerLabel) {
       k.on("death", "enemy", (e) => {
         const index = monsters.indexOf(e);
         if (index > -1) {
-          increasePlayerXP(50);
+          increasePlayerXP(25);
           monsters.splice(index, 1);
           count--;
         }
@@ -109,4 +138,3 @@ export function spawnMonsters(timerLabel) {
   }
   spawn();
 }
-

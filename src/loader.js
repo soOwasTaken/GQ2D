@@ -53,11 +53,8 @@ export function loadAssets() {
   });
 
   k.loadSprite("monster", "sprites/monster1.png");
-  k.loadSprite("TEST", "sprites/TEST.png");
-  k.loadFont("apl386", "sprites/apl386.ttf", {
-    outline: 4,
-    filter: "linear",
-  });
+  k.loadSprite("TEST", "sprites/TEST2.png");
+  k.loadSprite("map2", "sprites/map2Colisions.png");
   k.loadSprite("attack", "sprites/attack.png", {
     sliceX: 10,
     anims: {
@@ -108,6 +105,23 @@ export function loadAssets() {
       width: 16,
       height: 32,
     },
+    bow: {
+      x: 48,
+      y: 48,
+      width: 48,
+      height: 32,
+      sliceX: 3,
+        anims: {
+          idle: 0,
+          charging: { from: 0, to: 2 },
+        },
+      },
+    arrow: {
+      x: 32,
+      y: 0,
+      width: 16,
+      height: 16,
+    },
   });
   k.loadSprite("skel1", "sprites/skel1.png", {
     sliceX: 6,
@@ -118,6 +132,10 @@ export function loadAssets() {
         loop: true,
         speed: 10,
       },
+      idle: {
+        from: 2,
+        to: 2,
+      }
     },
   });
 
@@ -153,6 +171,60 @@ export function loadAssets() {
         loop: false,
         speed: 100,
       },
+    },
+  });
+  k.loadSprite("circleOfFire", "sprites/FireCast_96x96.png", {
+    sliceX: 28,
+    anims: {
+      Circle: {
+        from: 0,
+        to: 27,
+        loop: false,
+        speed: 70,
+      },
+    },
+  });
+
+  k.loadSprite("Tornado", "sprites/TornadoLoop_96x96.png", {
+    sliceX: 60,
+    anims: {
+      spin: {
+        from: 0,
+        to: 59,
+        loop: true,
+        speed: 100,
+      },
+    },
+  });
+  k.loadSprite("tornadoIcon", "sprites/icons/tornado.png");
+  k.loadSprite("fireArcIcon", "sprites/icons/FireArc.png");
+  k.loadSprite("explosionIcon", "sprites/icons/explosion.png");
+  k.loadSprite("moveSpeed", "sprites/icons/movespeed.png");
+  k.loadSprite("enemySpeed", "sprites/icons/enemyMovespeed.png");
+  k.loadSprite("freezeIcon", "sprites/icons/Freezing.png");
+  k.loadSprite("Freeze", "sprites/crystal_39x37-sheet.png", {
+    sliceX: 25,
+    anims: {
+      freezing: {
+        from: 0,
+        to: 24,
+        loop: false,
+        speed: 100,
+      },
+    },
+  });
+  k.loadSpriteAtlas("sprites/DesertTiles.png", {
+    transparent: {
+      x: 112,
+      y: 31,
+      width: 16,
+      height: 16,
+    },
+    wallendfacingRight: {
+      x: 0,
+      y: 128,
+      width: 16,
+      height: 48,
     },
   });
 }
