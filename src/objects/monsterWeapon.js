@@ -12,15 +12,15 @@ export function monsterWeapon(monster) {
   let canAttack = true; // Flag to track if the monster can attack
   let attackCooldown = false; // Flag to track if the monster is on attack cooldown
 
-  const weapons = ["bone", "bone_axe"];
-  const weaponSprite = weapons[Math.floor(Math.random() * weapons.length)];
+  // const weapons = ["bone", "bone_axe"];
+  // const weaponSprite = weapons[Math.floor(Math.random() * weapons.length)];
 
   const weapon = k.add([
     k.pos(),
-    k.sprite(weaponSprite), // Replace with the sprite for the monster's weapon
+    k.sprite("bone_axe"), // Replace with the sprite for the monster's weapon
     k.origin("bot"),
     k.rotate(0),
-    k.scale(0.8),
+    k.scale(1),
     k.follow(monster, vec2(-8, 0)), // Adjust the weapon's position relative to the monster
     "monsterWeapon",
     k.area({ scale: 1 }),
@@ -30,8 +30,8 @@ export function monsterWeapon(monster) {
   weapon.isSwinging = false;
 
   function swing() {
-    let swingDuration = 0.5;
-    let swingAngle = 90;
+    let swingDuration = 0.3;
+    let swingAngle = 160;
     let swingProgress = 0;
     let hitPlayer = false; // Flag to track if the player has been hit by the swing
 
@@ -87,9 +87,11 @@ export function monsterWeapon(monster) {
     if (player.pos.x > monster.pos.x) {
       monsterDirection = "right";
       weapon.follow.offset = vec2(-8, 0);
+      weapon.flipX(false);
     } else {
       monsterDirection = "left";
       weapon.follow.offset = vec2(8, 0);
+      weapon.flipX(true);
     }
   }
   k.loop(1, () => {

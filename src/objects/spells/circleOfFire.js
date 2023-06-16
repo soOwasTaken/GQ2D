@@ -36,9 +36,9 @@ export function playCircleOfFireAnimation(hitPos) {
         size: 8, // text size
         font: "sinko",
       }),
-      k.pos(e.pos.x, e.pos.y - 20), // Adjusted position to be above the monster
+      k.pos(e.pos.x, e.pos.y - 27), // Adjusted position to be above the monster
       k.lifespan(1),
-      k.color(255, 0, 0),
+      k.color(160, 0, 160),
       {
         value: -damage,
       },

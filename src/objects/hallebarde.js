@@ -78,8 +78,8 @@ export function hallebarde() {
   });
 
   function thrust() {
-    const raiseLowerDuration = 0.2;
-    const thrustDuration = 0.2;
+    const raiseLowerDuration = 0.15;
+    const thrustDuration = 0.15;
     const thrustDistance = 135;
     const hitMonsters = new Set();
     let actionProgress = 0;
@@ -235,10 +235,4 @@ export function hallebarde() {
   k.on("death", "enemy", (e) => {
     destroy(e);
   });
-
-  function startCooldown(duration) {
-    k.wait(duration, () => {
-      canThrust = true;
-    });
-  }
 }

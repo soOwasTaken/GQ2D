@@ -151,10 +151,10 @@ function createTimer() {
 
   const timerLabel = add([
     text("00:00", 4),
-    pos(10, 40),
+    pos(10, 70),
     layer("ui"),
     fixed(),
-    scale(0.3),
+    scale(0.15),
   ]);
 
   loop(1, () => {

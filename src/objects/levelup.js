@@ -130,6 +130,8 @@ export function increasePlayerXP(amount) {
         const buttonSize = 100;
         const buttonSpacing = 20;
 
+        k.destroy(levelUpAnimation);
+
         // Calculate button positions
         const buttonX = player.pos.x - buttonSize - buttonSpacing;
         const buttonY = player.pos.y;

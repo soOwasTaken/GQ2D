@@ -41,6 +41,7 @@ export function createMonster() {
       enemySpeed: getEnemySpeed(),
       isAffectedByTornado: false,
       isFrozen: false,
+      bowEquiped: false,
     },
   ]);
   // Create hitbox with reduced opacity
@@ -90,13 +91,19 @@ export function createMonster() {
       monster.direction = 1;
     }
   });
-  // if (player.level >= 2 && Math.random() < 0.3) {
-  //   monsterBow(monster); // range with bow monster only one can be enabled at time
-  // } else {
-  //   monsterWeapon(monster); // melee monster
-  // }
-  monsterWeapon(monster);
-  return monster;
+  if (player.level >= 2 && Math.random() < 0.15)
+  {
+    monsterBow(monster);
+    monster.bowEquiped = true; // range with bow monster only one can be enabled at time
+  } else {
+  monsterWeapon(monster); // melee monster
+  }
+  if (monster.bowEquiped == true) {
+    monster.onDestroy(() => {
+      monster.bowEquiped = false;
+    });
+  }
+    return monster;
 }
 
 export function spawnMonsters(timerLabel) {
@@ -111,7 +118,7 @@ export function spawnMonsters(timerLabel) {
       k.on("death", "enemy", (e) => {
         const index = monsters.indexOf(e);
         if (index > -1) {
-          increasePlayerXP(25);
+          increasePlayerXP(50);
           monsters.splice(index, 1);
           count--;
         }

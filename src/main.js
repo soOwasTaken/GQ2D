@@ -2,7 +2,8 @@ import kaboom from "kaboom";
 import { loadAssets } from "./loader";
 import { loadMainScene } from "./scenes/mainScene";
 import { Player } from "./objects/player";
-
+import { setCircleEnabled } from "./objects/spells/circleOfFire";
+import { setFreezingEnabled } from "./objects/spells/freeze";
 const k = kaboom({
   scale: 2.5,
   height: 800,
@@ -39,6 +40,8 @@ scene("lose", (score) => {
       anchor: "center",
     }),
   ]);
+  setCircleEnabled(false);
+  setFreezingEnabled(false);
 
   // Go back to the main scene when space is pressed
   onKeyPress("space", () => go("main"));

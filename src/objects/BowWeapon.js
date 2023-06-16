@@ -1,10 +1,11 @@
 import k from "../main";
 import { Player } from "./player";
 import { isGamePaused } from "./pause";
+import { ENEMY_SPEED } from "./monster";
 
 export function monsterBow(monster) {
   const ATTACK_DISTANCE = 230; // Distance threshold for attacking the player
-  let ATTACK_COOLDOWN = 2; // Cooldown duration between attacks in seconds
+  let ATTACK_COOLDOWN = 1; // Cooldown duration between attacks in seconds
   const ATTACK_DAMAGE = 10; // Damage inflicted on the player
 
   const player = Player(); // Get the player object
@@ -19,7 +20,7 @@ export function monsterBow(monster) {
     k.origin("bot"),
     k.rotate(0),
     k.scale(0.8),
-    k.follow(monster, vec2(-14, -14)), // Adjust the bow's position relative to the monster
+    k.follow(monster, vec2(14, 14)), // Adjust the bow's position relative to the monster
     "monsterBow",
     k.area({ scale: 1 }),
   ]);
@@ -28,16 +29,18 @@ export function monsterBow(monster) {
   let isReleasing = false; // Flag to track if the monster is releasing the arrow
 
   function updateMonsterDirection() {
-    if (player.pos.x > monster.pos.x) {
-      monsterDirection = "right";
-      monster.flipX(false);
-      bow.flipX(false);
-      bow.follow.offset = vec2(14, 14);
-    } else {
-      monsterDirection = "left";
-      monster.flipX(true);
-      bow.flipX(true);
-      bow.follow.offset = vec2(-14, 14);
+    if (!isGamePaused()) {
+      if (player.pos.x > monster.pos.x) {
+        monsterDirection = "right";
+        monster.flipX(false);
+        bow.flipX(false);
+        bow.follow.offset = vec2(14, 14);
+      } else {
+        monsterDirection = "left";
+        monster.flipX(true);
+        bow.flipX(true);
+        bow.follow.offset = vec2(-14, 14);
+      }
     }
   }
 
@@ -53,18 +56,18 @@ export function monsterBow(monster) {
 
       // Stop the monster's movement
       monster.move(0, 0);
-      monster.play("idle");
+      if (!isGamePaused()) {
+        monster.play("idle");
+      } 
 
       // Set monster.isAttacking to true when the monster starts attacking
       monster.isAttacking = true;
-
-      const direction = player.pos.sub(bow.pos).unit();
 
       // Define the arrow outside the wait function
       let arrow;
 
       // In the charging phase
-      k.wait(1, () => {
+      k.wait(0.5, () => {
         // Start the charging animation
         isCharging = true;
         bow.play("charging"); // Play the charging animation
@@ -83,7 +86,7 @@ export function monsterBow(monster) {
           chargingArrow.flipX(true);
         }
         // In the releasing phase
-        k.wait(1, () => {
+        k.wait(0.5, () => {
           // Destroy the "charging arrow"
           k.destroy(chargingArrow);
 
@@ -91,6 +94,8 @@ export function monsterBow(monster) {
           isReleasing = true;
           // Change the sprite to the release state
           bow.play("idle"); // Set the bow sprite to the charged frame
+
+          const direction = player.pos.sub(bow.pos).unit();
 
           // Create a "flying arrow" with the k.move property
           let flyingArrow = k.add([
@@ -104,21 +109,23 @@ export function monsterBow(monster) {
             k.area({ width: 8, height: 16 }), // Adjust the arrow's collision area as needed
             "flyingArrow",
           ]);
-            
-            flyingArrow.onUpdate(() => {
-                if (isGamePaused()) {
-                    destroy(flyingArrow);
-                }
-            })
 
+          flyingArrow.onUpdate(() => {
+            if (isGamePaused()) {
+              destroy(flyingArrow);
+            }
+          });
           // Inflict damage on the player when the "flying arrow" hits
           k.onCollide("flyingArrow", "player", (a, p) => {
             p.hurt(ATTACK_DAMAGE);
             k.destroy(a);
           });
+          monster.onDestroy(() => {
+            k.destroy(flyingArrow);
+          });
 
           // Set a cooldown before the monster can attack again
-          k.wait(2, () => {
+          k.wait(1, () => {
             canAttack = true;
             attackCooldown = false;
             monster.isAttacking = false;
@@ -132,25 +139,20 @@ export function monsterBow(monster) {
     }
   }
 
-  // Check for attacks on every frame
-    k.loop(5, () => {
-        if (!isGamePaused()) {
-            attack();
-        }
-  });
-
   // Cleanup function when the monster is destroyed
   monster.onDestroy(() => {
     k.destroy(bow);
   });
 
-  k.loop(1, () => {
-    if (!isCharging && !isReleasing) {
-      // Add this condition to prevent movement when charging or releasing
-      let direction = player.pos.sub(monster.pos).unit();
-      monster.move(direction.scale(monster.speed));
+  k.loop(0.5, () => {
+    if (monster.bowEquiped == true) {
+      if (!isCharging && !isReleasing) {
+        // Add this condition to prevent movement when charging or releasing
+        let direction = player.pos.sub(monster.pos).unit();
+        monster.move(direction.scale(monster.speed));
+      }
+      updateMonsterDirection();
+      attack();
     }
-    updateMonsterDirection();
-    attack();
   });
 }
