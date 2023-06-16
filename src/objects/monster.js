@@ -6,7 +6,7 @@ import { isGamePaused, isSpawningAllowed, isLevelUpPaused } from "./pause";
 import { monsterBow } from "./BowWeapon";
 export let monsters = [];
 
-export let ENEMY_SPEED = 150;
+export let ENEMY_SPEED = 70;
 
 export function setEnemySpeed(value) {
   ENEMY_SPEED = value;
@@ -31,7 +31,7 @@ export function createMonster() {
     k.sprite("skel1", { anim: "run" }),
     k.pos(randomX, randomY),
     k.area({ height: 55, weight: 40 }),
-    k.scale(4),
+    k.scale(1),
     k.origin("center"),
     k.health(30),
     "enemy",
@@ -136,7 +136,7 @@ export function spawnMonsters(timerLabel) {
       // E.g., halve the spawn interval every 10 seconds
       const spawnInterval = Math.max(
         0.1,
-        2 * Math.pow(0.9, Math.floor(totalSeconds / 25))
+        1.5 * Math.pow(0.6, Math.floor(totalSeconds / 30))
       );
       k.wait(spawnInterval, spawn);
     } else {
