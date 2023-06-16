@@ -4,7 +4,7 @@ import { Player } from "./player";
 export function monsterWeapon(monster) {
   const ATTACK_DISTANCE = 35; // Distance threshold for attacking the player
   const ATTACK_COOLDOWN = 1; // Cooldown duration between attacks in seconds
-  const ATTACK_DAMAGE = 5; // Damage inflicted on the player
+  const ATTACK_DAMAGE = 10; // Damage inflicted on the player
 
   const player = Player(); // Get the player object
 
