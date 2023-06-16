@@ -9,6 +9,7 @@ import { createMonster } from "../objects/monster";
 import { initUI } from "./ui";
 import { playCircleOfFireAnimation } from "../objects/spells/circleOfFire";
 import { spawnTornadoes } from "../objects/spells/tornados";
+import { isGamePaused } from "../objects/pause";
 export function mainScene() {
   k.layers(
     [
@@ -18,13 +19,15 @@ export function mainScene() {
     "game"
   ); // "game" is the default layer
   map();
-  createMonster(); // to spawn a single monster
+  // createMonster(); // to spawn a single monster
   Player();
   initUI();
   hallebarde();
   playCircleOfFireAnimation();
+  debug.paused = true;
 };
 
 export function loadMainScene() {
   return k.scene("main", mainScene);
 }
+
