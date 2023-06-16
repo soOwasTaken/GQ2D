@@ -91,7 +91,7 @@ export function createMonster() {
       monster.direction = 1;
     }
   });
-  if (player.level >= 2 && Math.random() < 0.2) {
+  if (player.level >= 1 && Math.random() < 0.2) {
     monsterBow(monster);
     monster.bowEquiped = true; // range with bow monster only one can be enabled at time
   } else {
@@ -136,7 +136,7 @@ export function spawnMonsters(timerLabel) {
       const spawnInterval = Math.max(
         0.1,
         baseSpawnInterval *
-          Math.pow(0.6, Math.floor(totalSeconds / increaseInterval))
+          Math.pow(1.5, Math.floor(totalSeconds / increaseInterval))
       );
       k.wait(spawnInterval, spawn);
     } else {
