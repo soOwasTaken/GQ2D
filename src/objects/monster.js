@@ -33,7 +33,7 @@ export function createMonster() {
     k.area({ height: 55, weight: 40 }),
     k.scale(1),
     k.origin("center"),
-    k.health(30),
+    k.health(20),
     "enemy",
     {
       direction: 1,
@@ -130,7 +130,7 @@ export function spawnMonsters(timerLabel) {
       const seconds = Number(timerLabel.text.split(":")[1]);
       const minutes = Number(timerLabel.text.split(":")[0]);
       const totalSeconds = minutes * 60 + seconds;
-      const baseSpawnInterval = 5; // Adjust the base spawn interval as desired
+      const baseSpawnInterval = 3; // Adjust the base spawn interval as desired
       const increaseInterval = 20; // Adjust the interval at which the spawn interval increases
 
       const spawnInterval = Math.max(
