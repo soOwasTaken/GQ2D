@@ -118,7 +118,7 @@ export function spawnMonsters(timerLabel) {
       k.on("death", "enemy", (e) => {
         const index = monsters.indexOf(e);
         if (index > -1) {
-          increasePlayerXP(50);
+          increasePlayerXP(25);
           monsters.splice(index, 1);
           count--;
         }
