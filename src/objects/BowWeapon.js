@@ -109,16 +109,26 @@ export function monsterBow(monster) {
             k.area({ width: 8, height: 16 }), // Adjust the arrow's collision area as needed
             "flyingArrow",
           ]);
+          let followCircle = k.add([
+            k.pos(flyingArrow.pos.x, flyingArrow.pos.y), // Set the initial position of the circle
+            k.color(180, 0, 0), // Set the color of the circle to red with 0.2 opacity
+            k.circle(7), // Set the size of the circle
+            k.follow(flyingArrow, vec2(0, 0)), // Make the circle follow the flying arrow
+            k.opacity(0.25),
+            "followCircle",
+          ]);
 
           flyingArrow.onUpdate(() => {
             if (isGamePaused()) {
-              destroy(flyingArrow);
+              k.destroy(flyingArrow);
+              k.destroy(followCircle);
             }
           });
           // Inflict damage on the player when the "flying arrow" hits
           k.onCollide("flyingArrow", "player", (a, p) => {
             p.hurt(ATTACK_DAMAGE);
             k.destroy(a);
+            k.destroy(followCircle);
           });
           monster.onDestroy(() => {
             k.destroy(flyingArrow);

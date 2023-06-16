@@ -20,7 +20,7 @@ export function Player() {
     {
       xp: 0,
       level: 1,
-      maxXP: 100,
+      maxXP: 150,
       speed: 120,
       maxLevel: 7,
     },

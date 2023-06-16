@@ -91,7 +91,7 @@ export function createMonster() {
       monster.direction = 1;
     }
   });
-  if (player.level >= 2 && Math.random() < 0.15) {
+  if (player.level >= 2 && Math.random() < 0.2) {
     monsterBow(monster);
     monster.bowEquiped = true; // range with bow monster only one can be enabled at time
   } else {
