@@ -76,7 +76,11 @@ export function Player() {
         !isKeyDown("left") &&
         !isKeyDown("right") &&
         !isKeyDown("up") &&
-        !isKeyDown("down")
+        !isKeyDown("down") &&
+        !isKeyDown("z") &&
+        !isKeyDown("q") &&
+        !isKeyDown("s") &&
+        !isKeyDown("d")
       ) {
         player.play("idle");
       }
