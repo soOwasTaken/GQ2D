@@ -136,7 +136,7 @@ export function spawnMonsters(timerLabel) {
       // E.g., halve the spawn interval every 10 seconds
       const spawnInterval = Math.max(
         0.1,
-        2 * Math.pow(0.9, Math.floor(totalSeconds / 10))
+        2 * Math.pow(0.9, Math.floor(totalSeconds / 25))
       );
       k.wait(spawnInterval, spawn);
     } else {
