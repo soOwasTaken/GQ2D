@@ -91,19 +91,18 @@ export function createMonster() {
       monster.direction = 1;
     }
   });
-  if (player.level >= 2 && Math.random() < 0.15)
-  {
+  if (player.level >= 2 && Math.random() < 0.15) {
     monsterBow(monster);
     monster.bowEquiped = true; // range with bow monster only one can be enabled at time
   } else {
-  monsterWeapon(monster); // melee monster
+    monsterWeapon(monster); // melee monster
   }
   if (monster.bowEquiped == true) {
     monster.onDestroy(() => {
       monster.bowEquiped = false;
     });
   }
-    return monster;
+  return monster;
 }
 
 export function spawnMonsters(timerLabel) {
@@ -131,12 +130,13 @@ export function spawnMonsters(timerLabel) {
       const seconds = Number(timerLabel.text.split(":")[1]);
       const minutes = Number(timerLabel.text.split(":")[0]);
       const totalSeconds = minutes * 60 + seconds;
+      const baseSpawnInterval = 5; // Adjust the base spawn interval as desired
+      const increaseInterval = 20; // Adjust the interval at which the spawn interval increases
 
-      // Adjust spawn interval based on elapsed time
-      // E.g., halve the spawn interval every 10 seconds
       const spawnInterval = Math.max(
         0.1,
-      1.5 * Math.pow(0.6, Math.floor(totalSeconds / 20)) * 2.5
+        baseSpawnInterval *
+          Math.pow(0.6, Math.floor(totalSeconds / increaseInterval))
       );
       k.wait(spawnInterval, spawn);
     } else {
