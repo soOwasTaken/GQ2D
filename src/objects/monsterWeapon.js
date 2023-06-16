@@ -20,7 +20,7 @@ export function monsterWeapon(monster) {
     k.sprite("bone_axe"), // Replace with the sprite for the monster's weapon
     k.origin("bot"),
     k.rotate(0),
-    k.scale(1),
+    k.scale(5),
     k.follow(monster, vec2(-8, 0)), // Adjust the weapon's position relative to the monster
     "monsterWeapon",
     k.area({ scale: 1 }),
