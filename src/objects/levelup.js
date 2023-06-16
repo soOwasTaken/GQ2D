@@ -167,23 +167,73 @@ export function increasePlayerXP(amount) {
             }
           );
           button.onClick(() => {
-            toggleLevelUpPause();
+            const player = getPlayer();
             destroyButtons();
-            action.action(); // Call the selected action
-            if (action.action === setCircleEnabled) {
-              action.action(true); // Pass the argument to enable the circle
-            }
-            if (action.action === setFreezingEnabled) {
-              action.action(true); // Pass the argument to enable the circle
+            k.get("tooltipTag").map((tooltip) => tooltip.destroy());
+            let countdownValue = 3;
+            let countdown = k.add([
+              k.text(countdownValue.toString()),
+              k.pos(player.pos),
+              k.origin("center"),
+              k.layer("ui"),
+              k.scale(1.6),
+              { value: countdownValue },
+            ]);
+
+            // update countdown every second
+            k.wait(2, toggleLevelUpPause);
+            for (let i = 0; i < 3; i++) {
+              k.wait(i, () => {
+                countdown.value--;
+                countdown.text = countdown.value.toString();
+                if (countdown.value === 0) {
+                  countdown.text = countdown.value.toString();
+                  countdown.destroy();
+                  action.action(); // Call the selected action
+                  if (action.action === setCircleEnabled) {
+                    action.action(true); // Pass the argument to enable the circle
+                  }
+                  if (action.action === setFreezingEnabled) {
+                    action.action(true); // Pass the argument to enable the circle
+                  }
+                  action.available = false;
+                }
+              });
             }
             setSpawningTo(true);
-            action.available = false;
-            k.get("tooltipTag").map((tooltip) => tooltip.destroy());
           });
         });
       });
     }
   }
+}
+
+function showCountdown(count) {
+  k.add([
+    k.text(count.toString(), 32),
+    k.pos(k.width() / 2, k.height() / 2),
+    k.origin("center"),
+    k.color(1, 1, 1),
+    k.layer("ui"),
+    {
+      countdown: count,
+    },
+  ]);
+}
+
+function startCountdown() {
+  let count = 3;
+
+  // Display countdown numbers at regular intervals
+  const countdownInterval = k.every(1, () => {
+    showCountdown(count);
+    count--;
+
+    if (count < 0) {
+      countdownInterval();
+      toggleLevelUpPause();
+    }
+  });
 }
 
 // Helper function to randomly select actions from the available actions array

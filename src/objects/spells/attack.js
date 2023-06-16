@@ -5,7 +5,7 @@ import { isGamePaused } from "../pause";
 
 export function playAttackAnimation() {
     const player = Player();
-
+  
     const attackAnim = k.add([
         k.pos(player.pos),
         k.sprite("attack", {
