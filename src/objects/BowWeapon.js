@@ -132,6 +132,7 @@ export function monsterBow(monster) {
           });
           monster.onDestroy(() => {
             k.destroy(flyingArrow);
+            k.destroy(followCircle);
           });
 
           // Set a cooldown before the monster can attack again
