@@ -45,8 +45,8 @@ scene("lose", (score) => {
   setFreezingEnabled(false);
 
   // Go back to the main scene when space is pressed
-  onKeyPress("space", () => go("start"));
-  onClick(() => go("start"));
+  onKeyPress("space", () => location.reload());
+  onClick(() => location.reload());
 });
 
 k.on("death", "player", (e) => {
