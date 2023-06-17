@@ -5,6 +5,7 @@ import { loadStartScene } from "./scenes/mainScene";
 import { Player } from "./objects/player";
 import { setCircleEnabled } from "./objects/spells/circleOfFire";
 import { setFreezingEnabled } from "./objects/spells/freeze";
+import { getScore } from "./scenes/score";
 const k = kaboom({
   scale: 2.5,
   height: 800,
@@ -23,12 +24,18 @@ scene("lose", (score) => {
   // Add the "Game Over" text object with text() component and options
   const gameOverText = k.add([
     k.text("Game Over", 32), // Change the size as necessary
-    k.pos(k.width() / 2, k.height() / 2), // Center the button
+    k.pos(k.width() / 2, k.height() / 2 - 10), // Center the button
     k.origin("center"),
   ]);
+        k.add([
+          k.text(`Your score was: ${getScore()}`), // Change the size as necessary
+          k.pos(k.width() / 2, k.height() / 2 + 40), // Center the button
+          k.origin("center"),
+          k.scale(0.3),
+        ]);
   k.add([
     k.text("Press any key to restart"), // Change the size as necessary
-    k.pos(k.width() / 2, k.height() / 2 + 50), // Center the button
+    k.pos(k.width() / 2, k.height() / 2 + 70), // Center the button
     k.origin("center"),
     k.scale(0.3),
   ]);
