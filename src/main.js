@@ -34,13 +34,35 @@ scene("lose", (score) => {
           k.scale(0.3),
         ]);
   k.add([
-    k.text("Press any key to restart"), // Change the size as necessary
+    k.text("Press any key to restart, or press \"s\" to save your score"), // Change the size as necessary
     k.pos(k.width() / 2, k.height() / 2 + 70), // Center the button
     k.origin("center"),
-    k.scale(0.3),
+    k.scale(0.2),
   ]);
+  onKeyPress("s", () => {
+    const playerName = prompt("Enter your name:");
 
-  // Go back to the main scene when space is pressed
+    if (playerName !== null) {
+      const playerScore = getScore();
+
+      // Send the score to the server
+      fetch("/game-2d/score", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name: playerName, score: playerScore }),
+      })
+        .then((response) => {
+          if (response.ok) {
+            console.log("Score saved successfully");
+          } else {
+            console.error("Error saving score", response);
+          }
+        })
+        .catch((error) => console.error("Error sending score:", error));
+    }
+  });
   onKeyPress("space", () => location.reload());
   onClick(() => location.reload());
 });
