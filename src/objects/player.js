@@ -22,7 +22,7 @@ export function Player() {
       level: 1,
       maxXP: 200,
       speed: 120,
-      maxLevel: 7,
+      maxLevel: 6,
     },
   ]);
 
