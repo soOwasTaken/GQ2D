@@ -2,7 +2,23 @@ import k from "../main";
 import { Player } from "../objects/player";
 import { spawnMonsters } from "../objects/monster";
 import { isGamePaused } from "../objects/pause";
+import { getScore } from "./score";
 const PlayerBaseHealth = 100;
+
+function createScoreDisplay() {
+  const scoreLabel = add([
+    text(`Score: ${getScore()}`, 4),
+    pos(10, 50), // Adjust this as needed
+    layer("ui"),
+    fixed(),
+    scale(0.15),
+    {
+      update() {
+        this.text = `Score: ${getScore()}`; // Update the score display each frame
+      },
+    },
+  ]);
+}
 
 function createHealthBar() {
   const player = Player();
@@ -196,6 +212,7 @@ function getColorByPercentage(percentage) {
 export function initUI() {
   layers(["game", "ui"], "ui");
   createHealthBar();
+  createScoreDisplay();
   createExperienceBar(); // Add this line
   const timerLabel = createTimer();
   spawnMonsters(timerLabel); //In comment for new map setting up purpose

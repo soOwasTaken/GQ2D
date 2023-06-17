@@ -1,6 +1,7 @@
 import kaboom from "kaboom";
 import { loadAssets } from "./loader";
 import { loadMainScene } from "./scenes/mainScene";
+import { loadStartScene } from "./scenes/mainScene";
 import { Player } from "./objects/player";
 import { setCircleEnabled } from "./objects/spells/circleOfFire";
 import { setFreezingEnabled } from "./objects/spells/freeze";
@@ -14,7 +15,7 @@ const k = kaboom({
 export default k;
 
 loadAssets();
-loadMainScene();
+loadStartScene();
 
 let finalTime; // Declare finalTime variable outside of the initUI function
 
@@ -44,8 +45,8 @@ scene("lose", (score) => {
   setFreezingEnabled(false);
 
   // Go back to the main scene when space is pressed
-  onKeyPress("space", () => go("main"));
-  onClick(() => go("main"));
+  onKeyPress("space", () => go("start"));
+  onClick(() => go("start"));
 });
 
 k.on("death", "player", (e) => {
@@ -56,4 +57,4 @@ k.on("death", "player", (e) => {
 
 let gameIsPaused = false;
 
-k.go("main");
+k.go("start");

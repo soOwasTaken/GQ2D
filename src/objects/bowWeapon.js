@@ -4,15 +4,15 @@ import { isGamePaused } from "./pause";
 import { ENEMY_SPEED } from "./monster";
 
 export function monsterBow(monster) {
-  const ATTACK_DISTANCE = 230; // Distance threshold for attacking the player
-  let ATTACK_COOLDOWN = 1; // Cooldown duration between attacks in seconds
-  const ATTACK_DAMAGE = 10; // Damage inflicted on the player
+  const ATTACK_DISTANCE = 160;
+  let ATTACK_COOLDOWN = 1;
+  const ATTACK_DAMAGE = monster.damage;
 
-  const player = Player(); // Get the player object
+  const player = Player();
 
-  let monsterDirection = "left"; // Default monster direction
-  let canAttack = true; // Flag to track if the monster can attack
-  let attackCooldown = false; // Flag to track if the monster is on attack cooldown
+  let monsterDirection = "left";
+  let canAttack = true;
+  let attackCooldown = false;
 
   const bow = k.add([
     k.pos(),
@@ -46,31 +46,20 @@ export function monsterBow(monster) {
 
   // Function to handle the monster's attack logic
   function attack() {
-    if (
-      canAttack &&
-      !attackCooldown &&
-      player.pos.dist(monster.pos) <= ATTACK_DISTANCE
-    ) {
+    if (canAttack && !attackCooldown) {
       canAttack = false;
       attackCooldown = true;
-
-      // Stop the monster's movement
       monster.move(0, 0);
       if (!isGamePaused()) {
         monster.play("idle");
-      } 
+      }
 
-      // Set monster.isAttacking to true when the monster starts attacking
       monster.isAttacking = true;
-
-      // Define the arrow outside the wait function
+      let initialPlayerPos = player.pos.clone();
       let arrow;
-
-      // In the charging phase
       k.wait(0.5, () => {
-        // Start the charging animation
         isCharging = true;
-        bow.play("charging"); // Play the charging animation
+        bow.play("charging");
 
         // Create a "charging arrow" without the k.move property, which will make it stationary
         let chargingArrow = k.add([
@@ -87,6 +76,17 @@ export function monsterBow(monster) {
         }
         // In the releasing phase
         k.wait(0.5, () => {
+          // Check if player has moved too far
+          if (initialPlayerPos.dist(player.pos) > 120) {
+            // Player has moved too far, cancel shot
+            k.destroy(chargingArrow);
+            canAttack = true;
+            attackCooldown = false;
+            monster.isAttacking = false;
+            bow.play("idle");
+            monster.play("run");
+            return;
+          }
           // Destroy the "charging arrow"
           k.destroy(chargingArrow);
 
@@ -118,23 +118,25 @@ export function monsterBow(monster) {
             k.area({ width: 8, height: 8 }),
             k.outview({ destroy: true }),
             "followCircle",
+            { hit: false },
           ]);
-
-          flyingArrow.onUpdate(() => {
-            if (isGamePaused()) {
+          if (isGamePaused()) {
+            flyingArrow.onUpdate(() => {
               k.destroy(flyingArrow);
               k.destroy(followCircle);
+            });
+          }
+          flyingArrow.onUpdate(() => {
+            if (flyingArrow.pos.dist(player.pos) <= 30) {
+              k.onCollide("flyingArrow", "player", (a, p) => {
+                if (!a.hit) {
+                  p.hurt(ATTACK_DAMAGE);
+                  a.hit = true;
+                }
+                k.destroy(a);
+                k.destroy(followCircle);
+              });
             }
-          });
-          // Inflict damage on the player when the "flying arrow" hits
-          k.onCollide("flyingArrow", "player", (a, p) => {
-            p.hurt(ATTACK_DAMAGE);
-            k.destroy(a);
-            k.destroy(followCircle);
-          });
-          monster.onDestroy(() => {
-            k.destroy(flyingArrow);
-            k.destroy(followCircle);
           });
 
           // Set a cooldown before the monster can attack again
@@ -147,25 +149,35 @@ export function monsterBow(monster) {
             monster.move(0, 0);
             monster.play("run");
           });
+          // Cleanup function when the monster is destroyed
+          monster.onDestroy(() => {
+            k.destroy(bow);
+            k.destroy(flyingArrow);
+            k.destroy(followCircle);
+          });
         });
       });
     }
   }
 
-  // Cleanup function when the monster is destroyed
-  monster.onDestroy(() => {
-    k.destroy(bow);
-  });
-
-  k.loop(0.5, () => {
+  function decideAction() {
     if (monster.bowEquiped == true) {
       if (!isCharging && !isReleasing) {
-        // Add this condition to prevent movement when charging or releasing
         let direction = player.pos.sub(monster.pos).unit();
         monster.move(direction.scale(monster.speed));
       }
       updateMonsterDirection();
-      attack();
+      if (player.pos.dist(monster.pos) <= ATTACK_DISTANCE && !attackCooldown) {
+        attack();
+      }
     }
+  }
+
+  player.onUpdate(() => {
+    decideAction();
+  });
+
+  monster.on("equipBow", () => {
+    decideAction();
   });
 }

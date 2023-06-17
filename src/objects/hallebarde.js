@@ -12,8 +12,8 @@ let playerDirection = "right";
 function getAttackArea(playerDirection) {
   const player = Player();
   const playerPos = player.pos;
-  const width = 100; // Width of the attack area
-  const height = 40; // Height of the attack area
+  const width = 80; // Width of the attack area
+  const height = 50; // Height of the attack area
 
   if (playerDirection === "right") {
     return {

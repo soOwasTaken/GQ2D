@@ -7,6 +7,7 @@ import { spawnTornadoes } from "./spells/tornados";
 import { monsterWeapon } from "./monsterWeapon";
 import { setEnemySpeed, getEnemySpeed } from "./monster";
 import { setFreezingEnabled } from "./spells/freeze";
+import { resetMonsterAI } from "./monster";
 
 const levelUpButtons = [];
 // Define the available actions the player can choose from
@@ -100,19 +101,19 @@ export function increasePlayerXP(amount) {
       player.level++;
       player.xp = 0; // Subtract max xp from player's xp
       if (player.level === 2) {
-        player.maxXP = 300;
-      }
-      if (player.level === 3) {
         player.maxXP = 500;
       }
+      if (player.level === 3) {
+        player.maxXP = 800;
+      }
       if (player.level === 4) {
-        player.maxXP = 600;
+        player.maxXP = 1200;
       }
       if (player.level === 5) {
-        player.maxXP = 700;
+        player.maxXP = 1800;
       }
       if (player.level === 6) {
-        player.maxXP = 800;
+        player.maxXP = 2400;
       }
 
       levelUpAnimation = k.add([
@@ -198,9 +199,10 @@ export function increasePlayerXP(amount) {
                   }
                   action.available = false;
                 }
+                resetMonsterAI();
+                setSpawningTo(true);
               });
             }
-            setSpawningTo(true);
           });
         });
       });
