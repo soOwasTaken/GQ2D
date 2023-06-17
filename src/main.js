@@ -34,7 +34,7 @@ scene("lose", (score) => {
           k.scale(0.3),
         ]);
   k.add([
-    k.text("Press any key to restart, or press \"s\" to save your score"), // Change the size as necessary
+    k.text("Press space to restart, or press \"s\" to save your score"), // Change the size as necessary
     k.pos(k.width() / 2, k.height() / 2 + 70), // Center the button
     k.origin("center"),
     k.scale(0.2),
@@ -64,7 +64,6 @@ scene("lose", (score) => {
     }
   });
   onKeyPress("space", () => location.reload());
-  onClick(() => location.reload());
 });
 
 k.on("death", "player", (e) => {
