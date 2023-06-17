@@ -21,28 +21,17 @@ let finalTime; // Declare finalTime variable outside of the initUI function
 
 scene("lose", (score) => {
   // Add the "Game Over" text object with text() component and options
-  const gameOverText = add([
-    text("Game Over", {
-      font: "apl386",
-      size: 96,
-      color: rgb(255, 0, 0),
-      origin: "center",
-      anchor: "centertop",
-    }),
+  const gameOverText = k.add([
+    k.text("Game Over", 32), // Change the size as necessary
+    k.pos(k.width() / 2, k.height() / 2), // Center the button
+    k.origin("center"),
   ]);
-
-  // Add finalTime text object below the "Game Over" text
-  const finalTimeText = add([
-    text(finalTime, {
-      font: "apl386",
-      size: 48,
-      color: rgb(255, 255, 255),
-      origin: "center",
-      anchor: "center",
-    }),
+  k.add([
+    k.text("Press any key to restart"), // Change the size as necessary
+    k.pos(k.width() / 2, k.height() / 2 + 50), // Center the button
+    k.origin("center"),
+    k.scale(0.3),
   ]);
-  setCircleEnabled(false);
-  setFreezingEnabled(false);
 
   // Go back to the main scene when space is pressed
   onKeyPress("space", () => location.reload());
