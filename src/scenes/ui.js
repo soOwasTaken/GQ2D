@@ -5,6 +5,9 @@ import { isGamePaused } from "../objects/pause";
 import { getScore } from "./score";
 const PlayerBaseHealth = 100;
 
+const urlParams = new URLSearchParams(window.location.search);
+const level = urlParams.get("level") || 1;
+
 function createScoreDisplay() {
   const scoreLabel = add([
     text(`Score: ${getScore()}`, 4),
@@ -215,5 +218,10 @@ export function initUI() {
   createScoreDisplay();
   createExperienceBar(); // Add this line
   const timerLabel = createTimer();
-  spawnMonsters(timerLabel); //In comment for new map setting up purpose
+  if (level == 1) {
+    spawnMonsters(timerLabel); //In comment for new map setting up purpose
+    //
+  } else if (level == 2) {
+    //
+  }
 }

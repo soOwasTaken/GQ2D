@@ -39,37 +39,36 @@ scene("lose", (score) => {
     k.origin("center"),
     k.scale(0.2),
   ]);
-  onKeyPress("s", () => {
-    const playerName = prompt("Enter your name:");
+onKeyPress("s", () => {
+  const playerName = prompt("Enter your name:");
+  if (playerName !== null) {
+    const playerScore = getScore();
 
-    if (playerName !== null) {
-      const playerScore = getScore();
-
-      // Send the score to the server
-      fetch("/game-2d/score", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name: playerName, score: playerScore }),
+    // Include the session ID when sending the score
+    fetch("/game-2d/score", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        sessionId: localStorage.getItem("sessionId"),
+        name: playerName,
+        score: playerScore,
+      }),
+    })
+      .then((response) => {
+        // Handle response
+        return response.json();
       })
-        .then((response) => {
-          if (response.ok) {
-            console.log("Score saved successfully");
-          } else {
-            console.error("Error saving score", response);
-          }
-        })
-        .catch((error) => console.error("Error sending score:", error));
-    }
-  });
-  onKeyPress("r", () => location.reload());
+      .then((data) => {
+        // Use data
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }
 });
-
-k.on("death", "player", (e) => {
-  clearInterval(timerInterval); // Stop the timer
-  finalTime = timerLabel.text; // Store the final time in the finalTime variable
-  k.go("lose");
+  onKeyPress("r", () => location.reload());
 });
 
 let gameIsPaused = false;

@@ -13,6 +13,10 @@ import { isGamePaused } from "../objects/pause";
 import { resetScore } from "./score";
 import { resetMonsterAI } from "../objects/monster";
 
+const urlParams = new URLSearchParams(window.location.search);
+const level = urlParams.get("level") || 1; // Default to level 1 if no level parameter is provided
+console.log(`Loading level ${level}`);
+
 export function mainScene() {
   k.layers(
     [
@@ -21,12 +25,18 @@ export function mainScene() {
     ],
     "game"
   ); // "game" is the default layer
-  map();
+  if (level == 1) {
+    console.log("Loading map for level 1");
+    map();
+    hallebarde();
+    playCircleOfFireAnimation();
+  } else if (level == 2) {
+    console.log("Loading map for level 2");
+    map2();
+  }
   // createMonster(); // to spawn a single monster
   Player();
   initUI();
-  hallebarde();
-  playCircleOfFireAnimation();
 }
 
 export function loadMainScene() {
