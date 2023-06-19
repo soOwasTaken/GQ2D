@@ -12,6 +12,7 @@ import { spawnTornadoes } from "../objects/spells/tornados";
 import { isGamePaused } from "../objects/pause";
 import { resetScore } from "./score";
 import { resetMonsterAI } from "../objects/monster";
+import { staff } from "../objects/staff";
 
 const urlParams = new URLSearchParams(window.location.search);
 const level = urlParams.get("level") || 1; // Default to level 1 if no level parameter is provided
@@ -33,6 +34,7 @@ export function mainScene() {
   } else if (level == 2) {
     console.log("Loading map for level 2");
     map2();
+    staff();
   }
   // createMonster(); // to spawn a single monster
   Player();

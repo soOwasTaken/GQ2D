@@ -222,6 +222,6 @@ export function initUI() {
     spawnMonsters(timerLabel); //In comment for new map setting up purpose
     //
   } else if (level == 2) {
-    //
+    //spawnmonsterlvl2
   }
 }

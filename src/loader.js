@@ -227,4 +227,23 @@ export function loadAssets() {
       height: 48,
     },
   });
+    k.loadSpriteAtlas("sprites/Desert-Gold.png", {
+      "staff": {
+        x: 112,
+        y: 0,
+        width: 16,
+        height: 48,
+      },
+    });
+    k.loadSprite("iceSpike", "sprites/IcePick_64x64.png", {
+      sliceX: 30,
+      anims: {
+        spike: {
+          from: 0,
+          to: 29,
+          loop: true,
+          speed: 150,
+        },
+      },
+    });
 }
