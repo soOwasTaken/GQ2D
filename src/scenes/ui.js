@@ -54,13 +54,13 @@ function createHealthBar() {
     layer("ui"),
   ]);
 
-    const healthLabel = add([
-      text("Health", 4),
-      pos(10, 2),
-      layer("ui"),
-      fixed(),
-      scale(0.1),
-    ]);
+  const healthLabel = add([
+    text("Health", 4),
+    pos(10, 2),
+    layer("ui"),
+    fixed(),
+    scale(0.1),
+  ]);
 
   const healthText = add([
     text(player.hp().toString(), maxHealthBar.width, {
@@ -68,7 +68,7 @@ function createHealthBar() {
       width: maxHealthBar.width,
       textAlign: "top",
     }),
-    pos((maxHealthBar.pos.x + 45), (maxHealthBar.pos.y - 5)),
+    pos(maxHealthBar.pos.x + 45, maxHealthBar.pos.y - 5),
     fixed(),
     layer("ui"),
     scale(0.2),
@@ -162,8 +162,6 @@ function createExperienceBar() {
   });
 }
 
-
-
 function createTimer() {
   let seconds = 0;
   let minutes = 0;
@@ -216,12 +214,7 @@ export function initUI() {
   layers(["game", "ui"], "ui");
   createHealthBar();
   createScoreDisplay();
-  createExperienceBar(); // Add this line
+  createExperienceBar();
   const timerLabel = createTimer();
-  if (level == 1) {
-    spawnMonsters(timerLabel); //In comment for new map setting up purpose
-    //
-  } else if (level == 2) {
-    //spawnmonsterlvl2
-  }
+  spawnMonsters(timerLabel);
 }
