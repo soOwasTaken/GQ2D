@@ -1,6 +1,7 @@
 import k from "../main";
 import { Player, getPlayer } from "./player";
 import { isGamePaused, togglePause } from "./pause";
+import { monsterBow } from "./bowWeapon";
 
 let playerDirection = "right";
 let attackingDirection = "right"; // Default attacking direction
@@ -125,29 +126,31 @@ export function staff() {
                 movingSpike.play("spike");
                 k.every("enemy", (enemy) => {
                   k.onCollide("spelld", "enemy", (s, e) => {
-                    if (!s.hitMonsters.has(e)) {
-                      e.hurt(s.damage);
-                      s.hitMonsters.add(e);
-                      const damageText = k.add([
-                        k.text(`-${s.damage}`, {
-                          size: 8, // text size
-                          font: "sinko",
-                        }),
-                        k.pos(e.pos.x, e.pos.y - 20), // Adjusted position to be above the monster
-                        k.lifespan(1),
-                        k.color(0, 100, 100),
-                        {
-                          value: -s.damage,
-                        },
-                      ]);
-                      damageText.onUpdate(() => {
-                        damageText.move(0, -40 * k.dt());
-                      });
-                      // Reduce the damage after each hit.
-                      s.damage -= 2;
-                      // If the damage is zero or less, destroy the moving spike.
-                      if (s.damage <= 0) {
-                        k.destroy(s);
+                    if (e.dead != true) {
+                      if (!s.hitMonsters.has(e)) {
+                        e.hurt(s.damage);
+                        s.hitMonsters.add(e);
+                        const damageText = k.add([
+                          k.text(`-${s.damage}`, {
+                            size: 8, // text size
+                            font: "sinko",
+                          }),
+                          k.pos(e.pos.x, e.pos.y - 20), // Adjusted position to be above the monster
+                          k.lifespan(1),
+                          k.color(0, 100, 100),
+                          {
+                            value: -s.damage,
+                          },
+                        ]);
+                        damageText.onUpdate(() => {
+                          damageText.move(0, -40 * k.dt());
+                        });
+                        // Reduce the damage after each hit.
+                        s.damage -= 2;
+                        // If the damage is zero or less, destroy the moving spike.
+                        if (s.damage <= 0) {
+                          k.destroy(s);
+                        }
                       }
                     }
                   });
@@ -172,7 +175,4 @@ export function staff() {
       },
     };
   }
-  k.on("death", "enemy", (e) => {
-    destroy(e);
-  });
 }

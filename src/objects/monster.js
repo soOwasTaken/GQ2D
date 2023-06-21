@@ -151,7 +151,7 @@ export function createMonsterLv2(extraHealth) {
   const player = Player();
   const playerPos = player.pos;
   const minDistance = 40;
-  setEnemySpeed(80);
+  setEnemySpeed(30);
 
   let randomX, randomY;
   do {
@@ -160,12 +160,12 @@ export function createMonsterLv2(extraHealth) {
   } while (playerPos.dist({ x: randomX, y: randomY }) < minDistance);
 
   const monster = k.add([
-    k.sprite("skel1", { anim: "run" }),
+    k.sprite("mommy", { anim: "run" }),
     k.pos(randomX, randomY),
     k.area({ height: 55, weight: 40 }),
-    k.scale(1.3),
+    k.scale(1),
     k.origin("center"),
-    k.health(40 + extraHealth),
+    k.health(20 + extraHealth),
     "enemy",
     {
       direction: 1,
@@ -175,6 +175,9 @@ export function createMonsterLv2(extraHealth) {
       isFrozen: false,
       bowEquiped: false,
       damage: 10,
+      corpse: false,
+      revives: 1,
+      dead: false,
     },
   ]);
   monsters.push(monster);
@@ -188,6 +191,9 @@ export function createMonsterLv2(extraHealth) {
   }
 
   monster.onUpdate(() => {
+        if (monster.dead) {
+          return; // Skip update if the monster is dead
+        }
     getEnemySpeed();
     if (!player.exists()) return;
     if (isMonsterAttacking || monster.isAttacking) return;
@@ -255,7 +261,30 @@ export function createMonsterLv2(extraHealth) {
       monster.direction = 1;
     }
   });
-  monsterWeapon(monster); // melee monster
+  monster.on("death", () => {
+    if (monster.revives > 0) {
+      monster.revives--;
+      monster.dead = true;
+      monster.play("death");
+      k.wait(3.5, () => {
+        monster.heal(20);
+        monster.dead = false;
+        monster.play("falling");
+        k.wait(0.2, () => {
+          monster.play("run");
+        })
+      });
+    } else {
+      // On the second death, remove monster and increment score
+      monster.destroy();
+      const index = monsters.indexOf(monster);
+      if (index > -1) {
+        monsters.splice(index, 1);
+        increasePlayerXP(25);
+        incrementScore(10);
+      }
+    }
+  });
   return monster;
 }
 
@@ -307,15 +336,17 @@ export function spawnMonsters(timerLabel) {
         createMonsterLv2(0);
       }
       count++;
-      k.on("death", "enemy", (e) => {
-        const index = monsters.indexOf(e);
-        if (index > -1) {
-          increasePlayerXP(25);
-          incrementScore(10);
-          monsters.splice(index, 1);
-          count--;
-        }
-      });
+      if (level == 1) {
+        k.on("death", "enemy", (e) => {
+          const index = monsters.indexOf(e);
+          if (index > -1) {
+            increasePlayerXP(25);
+            incrementScore(10);
+            monsters.splice(index, 1);
+            count--;
+          }
+        });
+      }
 
       if (count >= maxMonsters) {
         return;
