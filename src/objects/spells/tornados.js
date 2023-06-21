@@ -70,41 +70,43 @@ function createTornado() {
   });
   if (!isGamePaused()) {
     k.onCollide("tornadoAnimation", "enemy", (p, e) => {
-      const now = k.time();
-      //this e.enemySpeed -= 30;
-      if (now - e.lastDamaged < 0.5) {
-        // Less than 1 seconds have passed since the last damage, so do nothing
-        return;
+      if (e.dead != true) {
+        const now = k.time();
+        //this e.enemySpeed -= 30;
+        if (now - e.lastDamaged < 0.5) {
+          // Less than 1 seconds have passed since the last damage, so do nothing
+          return;
+        }
+
+        if (!e.isAffectedByTornado) {
+          // Slow down the monster and prevent further slowing for 5 seconds
+          e.originalEnemySpeed = e.enemySpeed;
+          e.enemySpeed *= 0.5;
+          e.isAffectedByTornado = true;
+
+          // Set a timer to restore the original speed after 2 seconds
+          setTimeout(() => {
+            e.isAffectedByTornado = false;
+            e.enemySpeed = e.originalEnemySpeed;
+          }, 2000);
+        }
+
+        const damage = Math.floor(Math.random() * 5) + 3; // Random damage between 3 and 7
+        e.hurt(damage);
+        e.lastDamaged = now; // Update the last damaged time
+
+        const damageText = k.add([
+          k.text(`-${damage}`, { size: 8, font: "sinko" }),
+          k.pos(e.pos.x, e.pos.y - 20),
+          k.lifespan(1),
+          k.color(255, 0, 0),
+          { value: -damage },
+        ]);
+
+        damageText.onUpdate(() => {
+          damageText.move(0, -40 * k.dt());
+        });
       }
-
-      if (!e.isAffectedByTornado) {
-        // Slow down the monster and prevent further slowing for 5 seconds
-        e.originalEnemySpeed = e.enemySpeed;
-        e.enemySpeed *= 0.5;
-        e.isAffectedByTornado = true;
-
-        // Set a timer to restore the original speed after 2 seconds
-        setTimeout(() => {
-          e.isAffectedByTornado = false;
-          e.enemySpeed = e.originalEnemySpeed;
-        }, 2000);
-      }
-
-      const damage = Math.floor(Math.random() * 5) + 3; // Random damage between 3 and 7
-      e.hurt(damage);
-      e.lastDamaged = now; // Update the last damaged time
-
-      const damageText = k.add([
-        k.text(`-${damage}`, { size: 8, font: "sinko" }),
-        k.pos(e.pos.x, e.pos.y - 20),
-        k.lifespan(1),
-        k.color(255, 0, 0),
-        { value: -damage },
-      ]);
-
-      damageText.onUpdate(() => {
-        damageText.move(0, -40 * k.dt());
-      });
     });
 
     return tornado;

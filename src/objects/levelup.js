@@ -8,58 +8,107 @@ import { monsterWeapon } from "./monsterWeapon";
 import { setEnemySpeed, getEnemySpeed } from "./monster";
 import { setFreezingEnabled } from "./spells/freeze";
 import { resetMonsterAI } from "./monster";
+import { earthquake } from "./spells/earthquake";
+const urlParams = new URLSearchParams(window.location.search);
+const level = urlParams.get("level") || 1;
 
 const levelUpButtons = [];
 // Define the available actions the player can choose from
-const actions = [
-  {
-    id: 1,
-    action: playAttackAnimation,
-    icon: "fireArcIcon",
-    available: true,
-    description:
-      "Attach to the player:\nA fire aura for close enemies\nDamage : 5",
-  },
-  {
-    id: 2,
-    action: setCircleEnabled,
-    icon: "explosionIcon",
-    available: true,
-    description:
-      "20% chance on hit :\nExplosion that deal area damage\nDamage : 10 to 15",
-  },
-  {
-    id: 3,
-    action: spawnTornadoes,
-    icon: "tornadoIcon",
-    available: true,
-    description:
-      "Every 5s :\nSpawn Tornadoes on close monster\nDamage :3 to 7, also slow enemy",
-  },
-  {
-    id: 4,
-    action: increasePlayerSpeed,
-    icon: "moveSpeed",
-    available: true,
-    description: "Buff :\nIncrease Player Speed\nMovespeed 120 -> 160",
-  },
-  {
-    id: 5,
-    action: decreaseEnemySpeed,
-    icon: "enemySpeed",
-    available: true,
-    description:
-      "Debuff :\nNew spawning monster are slower\nMovespeed 70 -> 50",
-  },
-  {
-    id: 6,
-    action: setFreezingEnabled,
-    icon: "freezeIcon",
-    available: true,
-    description:
-      "50% chance on hit from weapon :\nFreeze Enemy for a time\nFreeze duration : 3s",
-  },
-];
+let actions = [];
+
+if (level === 1) {
+  actions = [
+    {
+      id: 1,
+      action: playAttackAnimation,
+      icon: "fireArcIcon",
+      available: true,
+      description:
+        "Attach to the player:\nA fire aura for close enemies\nDamage : 5",
+    },
+    {
+      id: 2,
+      action: setCircleEnabled,
+      icon: "explosionIcon",
+      available: true,
+      description:
+        "20% chance on hit :\nExplosion that deal area damage\nDamage : 10 to 15",
+    },
+    {
+      id: 3,
+      action: spawnTornadoes,
+      icon: "tornadoIcon",
+      available: true,
+      description:
+        "Every 5s :\nSpawn Tornadoes on close monster\nDamage :3 to 7, also slow enemy",
+    },
+    {
+      id: 4,
+      action: increasePlayerSpeed,
+      icon: "moveSpeed",
+      available: true,
+      description: "Buff :\nIncrease Player Speed\nMovespeed 120 -> 160",
+    },
+    {
+      id: 5,
+      action: decreaseEnemySpeed,
+      icon: "enemySpeed",
+      available: true,
+      description:
+        "Debuff :\nNew spawning monster are slower\nMovespeed 70 -> 50",
+    },
+    {
+      id: 6,
+      action: setFreezingEnabled,
+      icon: "freezeIcon",
+      available: true,
+      description:
+        "50% chance on hit from weapon :\nFreeze Enemy for a time\nFreeze duration : 3s",
+    },
+  ];
+} else if (level == 2) {
+  actions = [
+    {
+      id: 1,
+      action: increasePlayerSpeed,
+      icon: "moveSpeed",
+      available: true,
+      description: "Buff :\nIncrease Player Speed\nMovespeed 120 -> 160",
+    },
+    {
+      id: 2,
+      action: decreaseEnemySpeed,
+      icon: "enemySpeed",
+      available: true,
+      description:
+        "Debuff :\nNew spawning monster are slower\nMovespeed 70 -> 50",
+    },
+    {
+      id: 3,
+      action: playAttackAnimation,
+      icon: "fireArcIcon",
+      available: true,
+      description:
+        "Attach to the player:\nA fire aura for close enemies\nDamage : 5",
+    },
+    {
+      id: 4,
+      action: spawnTornadoes,
+      icon: "tornadoIcon",
+      available: true,
+      description:
+        "Every 5s :\nSpawn Tornadoes on close monster\nDamage :3 to 7, also slow enemy",
+    },
+    {
+      id: 5,
+      action: earthquake,
+      icon: "earthquakeIcon",
+      available: true,
+      description:
+        "Every 20seconds :\nA earthquake happen!\nDamage :On all monster -10",
+    },
+  ];
+}
 
 function increasePlayerSpeed() {
   const player = getPlayer();

@@ -45,6 +45,7 @@ export function createMonster(extraHealth) {
       isFrozen: false,
       bowEquiped: false,
       damage: 10,
+      dead : false,
     },
   ]);
   // Create hitbox with reduced opacity
@@ -418,6 +419,7 @@ export function createWarrior(extraHealth) {
       });
     } else {
       monster.destroy();
+      monster.isAttacking = false;
       const index = monsters.indexOf(monster);
       if (index > -1) {
         monsters.splice(index, 1);
@@ -473,7 +475,7 @@ export function spawnMonsters(timerLabel) {
   function spawn() {
     if (isSpawningAllowed()) {
       if (level == 1) {
-        createMonster(0); // Adjust as needed based on your implementation
+        createMonster(0);
       } else if (level == 2) {
         //createWarrior(0);
         createMonsterLv2(0);

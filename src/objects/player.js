@@ -1,5 +1,6 @@
 import k from "../main";
 import { isGamePaused, togglePause, isLevelUpPaused } from "./pause";
+import { earthquake } from "./spells/earthquake";
 let player;
 
 
@@ -60,7 +61,7 @@ export function Player() {
     }
   });
     onKeyDown("x", () => {
-      debug.log("pos: " + mousePos());
+      //earthquake(); using this to test stuff
     });
 
   onKeyPress(["left", "right", "up", "down", "z", "q", "s", "d"], () => {
