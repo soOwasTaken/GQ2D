@@ -479,6 +479,24 @@ export function loadAssets() {
         width: 16,
         height: 48,
       },
+      "gold_sword": {
+        x: 32.1,
+        y: 16,
+        width: 16,
+        height:29,
+      },
+      "gold_axe": {
+        x: 48,
+        y: 10,
+        width: 16,
+        height:38,
+      },
+      "shield": {
+        x: 112,
+        y: 48,
+        width: 16,
+        height:32,
+      }
     });
     k.loadSprite("iceSpike", "sprites/IcePick_64x64.png", {
       sliceX: 30,
@@ -512,4 +530,19 @@ export function loadAssets() {
         falling:10,
       },
     });
+      k.loadSprite("warriorMommy", "sprites/warriormommy.png", {
+        sliceX: 10,
+        anims: {
+          run: {
+            from: 0,
+            to: 5,
+            loop: true,
+            speed: 10,
+          },
+          idle: {
+            from: 6,
+            to: 9,
+          },
+        },
+      });
   }

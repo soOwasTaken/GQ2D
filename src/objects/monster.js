@@ -1,6 +1,6 @@
 import k from "../main";
 import { Player } from "./player";
-import { monsterWeapon } from "./monsterWeapon";
+import { monsterWeapon, ShieldAndAxe } from "./monsterWeapon";
 import { increasePlayerXP } from "./levelup";
 import { isGamePaused, isSpawningAllowed, isLevelUpPaused } from "./pause";
 import { monsterBow } from "./bowWeapon";
@@ -272,10 +272,10 @@ export function createMonsterLv2(extraHealth) {
         monster.play("falling");
         k.wait(0.2, () => {
           monster.play("run");
+          monsterWeapon(monster);
         })
       });
     } else {
-      // On the second death, remove monster and increment score
       monster.destroy();
       const index = monsters.indexOf(monster);
       if (index > -1) {
@@ -285,6 +285,148 @@ export function createMonsterLv2(extraHealth) {
       }
     }
   });
+  monsterWeapon(monster);
+  return monster;
+}
+export function createWarrior(extraHealth) {
+  const player = Player();
+  const playerPos = player.pos;
+  const minDistance = 40;
+  setEnemySpeed(50);
+
+  let randomX, randomY;
+  do {
+    randomX = Math.random() * 780;
+    randomY = Math.random() * 780;
+  } while (playerPos.dist({ x: randomX, y: randomY }) < minDistance);
+
+  const monster = k.add([
+    k.sprite("warriorMommy", { anim: "run" }),
+    k.pos(randomX, randomY),
+    k.area({ scale : 1.3 }),
+    k.scale(1.5),
+    k.origin("center"),
+    k.health(100 + extraHealth),
+    "enemy",
+    {
+      direction: 1,
+      isAttacking: false,
+      enemySpeed: getEnemySpeed(),
+      isAffectedByTornado: false,
+      isFrozen: false,
+      bowEquiped: false,
+      damage: 30,
+      corpse: false,
+      revives: 0,
+      dead: false,
+    },
+  ]);
+  monsters.push(monster);
+
+  let isMonsterAttacking = false;
+
+  function euclideanDistance(p, q) {
+    const dx = p.x - q.x;
+    const dy = p.y - q.y;
+    return Math.sqrt(dx * dx + dy * dy);
+  }
+
+  monster.onUpdate(() => {
+    if (monster.dead) {
+      return; // Skip update if the monster is dead
+    }
+    getEnemySpeed();
+    if (!player.exists()) return;
+    if (isMonsterAttacking || monster.isAttacking) return;
+
+    for (let otherMonster of monsters) {
+      if (monster === otherMonster) continue;
+      const diff = monster.pos.sub(otherMonster.pos);
+      if (euclideanDistance(monster.pos, otherMonster.pos) < minDistance) {
+        monster.move(diff.unit().scale(monster.enemySpeed));
+        return;
+      }
+    }
+
+    if (!isGamePaused()) {
+      const dir = player.pos.sub(monster.pos).unit();
+      monster.move(dir.scale(monster.enemySpeed));
+      let separation = k.vec2(0, 0);
+      let count = 0;
+      for (let otherMonster of monsters) {
+        if (monster === otherMonster) continue;
+        const distance = euclideanDistance(monster.pos, otherMonster.pos);
+        if (distance < 50) {
+          // radius of separation
+          const diff = normalizeVec2(monster.pos.sub(otherMonster.pos));
+          separation = separation.add(diff);
+          count++;
+        }
+      }
+      if (count > 0) {
+        separation = { x: separation.x / count, y: separation.y / count };
+        const len = Math.sqrt(
+          separation.x * separation.x + separation.y * separation.y
+        );
+        if (len > 0) {
+          separation = normalizeVec2(separation)
+            .scale(monster.enemySpeed)
+            .sub(monster.speed);
+          if (
+            Math.sqrt(
+              separation.x * separation.x + separation.y * separation.y
+            ) > monster.enemySpeed
+          ) {
+            separation = normalizeVec2(separation).scale(monster.enemySpeed);
+          }
+        }
+        let proposedPosition = monster.pos.add(separation);
+        // Check if the proposed position is within game bounds (change 780 to your game dimensions)
+        if (
+          proposedPosition.x >= 0 &&
+          proposedPosition.y >= 0 &&
+          proposedPosition.x <= 780 &&
+          proposedPosition.y <= 780
+        ) {
+          monster.move(separation);
+        }
+      }
+    }
+
+    if (monster.pos.x > player.pos.x) {
+      monster.flipX(true);
+      monster.direction = -1;
+    }
+    if (monster.pos.x < player.pos.x) {
+      monster.flipX(false);
+      monster.direction = 1;
+    }
+  });
+  monster.on("death", () => {
+    if (monster.revives > 0) {
+      monster.revives--;
+      monster.dead = true;
+      monster.play("death");
+      k.wait(3.5, () => {
+        monster.heal(20);
+        monster.dead = false;
+        monster.play("falling");
+        k.wait(0.2, () => {
+          monster.play("run");
+          monsterWeapon(monster);
+        });
+      });
+    } else {
+      monster.destroy();
+      const index = monsters.indexOf(monster);
+      if (index > -1) {
+        monsters.splice(index, 1);
+        increasePlayerXP(50);
+        incrementScore(50);
+      }
+    }
+  });
+  ShieldAndAxe(monster);
   return monster;
 }
 
@@ -333,7 +475,11 @@ export function spawnMonsters(timerLabel) {
       if (level == 1) {
         createMonster(0); // Adjust as needed based on your implementation
       } else if (level == 2) {
+        //createWarrior(0);
         createMonsterLv2(0);
+        if (count % 5 === 0 && count !== 0) {
+          createWarrior(0);
+        }
       }
       count++;
       if (level == 1) {
