@@ -172,7 +172,7 @@ export function hallebarde() {
                     }
                     if (getCircleEnabled()) {
                       const randomChance = Math.random();
-                      if (randomChance <= 0.2) {
+                      if (randomChance <= 0.15) {
                         playCircleOfFireAnimation(enemy.pos);
                       }
                     }

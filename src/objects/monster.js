@@ -6,7 +6,7 @@ import { isGamePaused, isSpawningAllowed, isLevelUpPaused } from "./pause";
 import { monsterBow } from "./bowWeapon";
 import { incrementScore } from "../scenes/score";
 export let monsters = [];
-export let ENEMY_SPEED = 70;
+export let ENEMY_SPEED = 50;
 const urlParams = new URLSearchParams(window.location.search);
 const level = urlParams.get("level") || 1;
 
@@ -27,7 +27,7 @@ export function createMonster(extraHealth) {
   do {
     randomX = Math.random() * 780;
     randomY = Math.random() * 780;
-  } while (playerPos.dist({ x: randomX, y: randomY }) < minDistance);
+  } while (playerPos.dist({ x: randomX, y: randomY }) < 500);
 
   const monster = k.add([
     k.sprite("skel1", { anim: "run" }),
@@ -45,7 +45,7 @@ export function createMonster(extraHealth) {
       isFrozen: false,
       bowEquiped: false,
       damage: 10,
-      dead : false,
+      dead: false,
     },
   ]);
   // Create hitbox with reduced opacity
@@ -74,7 +74,7 @@ export function createMonster(extraHealth) {
     for (let otherMonster of monsters) {
       if (monster === otherMonster) continue;
       const diff = monster.pos.sub(otherMonster.pos);
-      if (euclideanDistance(monster.pos, otherMonster.pos) < minDistance) {
+      if (euclideanDistance(monster.pos, otherMonster.pos) < 40) {
         monster.move(diff.unit().scale(monster.enemySpeed));
         return;
       }
@@ -135,7 +135,7 @@ export function createMonster(extraHealth) {
       monster.direction = 1;
     }
   });
-  if (player.level >= 1 && Math.random() < 0.2) {
+  if (player.level >= 3 && Math.random() < 0.15) {
     monsterBow(monster);
     monster.bowEquiped = true; // range with bow monster only one can be enabled at time
   } else {
@@ -158,7 +158,7 @@ export function createMonsterLv2(extraHealth) {
   do {
     randomX = Math.random() * 780;
     randomY = Math.random() * 780;
-  } while (playerPos.dist({ x: randomX, y: randomY }) < minDistance);
+  } while (playerPos.dist({ x: randomX, y: randomY }) < 500);
 
   const monster = k.add([
     k.sprite("mommy", { anim: "run" }),
@@ -192,9 +192,9 @@ export function createMonsterLv2(extraHealth) {
   }
 
   monster.onUpdate(() => {
-        if (monster.dead) {
-          return; // Skip update if the monster is dead
-        }
+    if (monster.dead) {
+      return; // Skip update if the monster is dead
+    }
     getEnemySpeed();
     if (!player.exists()) return;
     if (isMonsterAttacking || monster.isAttacking) return;
@@ -274,13 +274,12 @@ export function createMonsterLv2(extraHealth) {
         k.wait(0.2, () => {
           monster.play("run");
           monsterWeapon(monster);
-        })
+        });
       });
     } else {
       monster.destroy();
       const index = monsters.indexOf(monster);
       if (index > -1) {
-        monsters.splice(index, 1);
         increasePlayerXP(25);
         incrementScore(10);
       }
@@ -299,15 +298,15 @@ export function createWarrior(extraHealth) {
   do {
     randomX = Math.random() * 780;
     randomY = Math.random() * 780;
-  } while (playerPos.dist({ x: randomX, y: randomY }) < minDistance);
+  } while (playerPos.dist({ x: randomX, y: randomY }) < 500);
 
   const monster = k.add([
     k.sprite("warriorMommy", { anim: "run" }),
     k.pos(randomX, randomY),
-    k.area({ scale : 1.3 }),
+    k.area({ scale: 1.3 }),
     k.scale(1.5),
     k.origin("center"),
-    k.health(100 + extraHealth),
+    k.health(90 + extraHealth),
     "enemy",
     {
       direction: 1,
@@ -422,7 +421,6 @@ export function createWarrior(extraHealth) {
       monster.isAttacking = false;
       const index = monsters.indexOf(monster);
       if (index > -1) {
-        monsters.splice(index, 1);
         increasePlayerXP(50);
         incrementScore(50);
       }
@@ -434,17 +432,39 @@ export function createWarrior(extraHealth) {
 
 export function resetMonsterAI() {
   for (let monster of monsters) {
-    // Reset any relevant properties or variables here
     monster.direction = 1;
-    monster.isAttacking = false;
-    // Reset any other properties or variables that control movement behavior
+    monster.isAttacking = false; // function to debug monster when they struggle moving
   }
 }
 
 export function spawnMonsters(timerLabel) {
-  const maxMonsters = 100; // Maximum number of monsters
+  const maxMonsters = 70; // Maximum number of monsters
   let count = 0;
-  let waveNumber = 0;
+  let waveNumber = 1;
+  let spawnIntervalId = null;
+  let maxMonsterReached = false;
+
+  if (level === 1) {
+    k.on("destroy", "enemy", (e) => {
+      const index = monsters.indexOf(e);
+      if (index > -1) {
+        increasePlayerXP(25);
+        incrementScore(10);
+        monsters.splice(index, 1);
+        count--;
+        //console.log("monster died count reduced to =", count);
+      }
+    });
+  } else {
+    k.on("destroy", "enemy", (e) => {
+      const index = monsters.indexOf(e);
+      monsters.splice(index, 1);
+      if (index > -1) {
+        count--;
+        //console.log("monster died count reduced to =", count); debugging
+      }
+    });
+  }
 
   function spawnWave() {
     if (isSpawningAllowed()) {
@@ -453,7 +473,7 @@ export function spawnMonsters(timerLabel) {
       const totalMinutes = minutes + Math.floor(seconds / 60);
       let extraHealth = 5 * totalMinutes;
 
-      const monstersInWave = 5 + 2 * waveNumber;
+      const monstersInWave = 1 + 2 * waveNumber;
       for (let i = 0; i < monstersInWave; i++) {
         if (level == 1) {
           createMonster(extraHealth);
@@ -468,7 +488,6 @@ export function spawnMonsters(timerLabel) {
       }
     }
 
-    // wait for 60s then spawn the next wave
     k.wait(60, spawnWave);
   }
 
@@ -484,36 +503,38 @@ export function spawnMonsters(timerLabel) {
         }
       }
       count++;
-      if (level == 1) {
-        k.on("death", "enemy", (e) => {
-          const index = monsters.indexOf(e);
-          if (index > -1) {
-            increasePlayerXP(25);
-            incrementScore(10);
-            monsters.splice(index, 1);
-            count--;
-          }
-        });
-      }
+      //console.log("count =", count);
 
-      if (count >= maxMonsters) {
-        return;
-      }
+    if (count >= maxMonsters) {
+      //console.log("max monster reached, looping...");
+      maxMonsterReached = true;
+      clearInterval(spawnIntervalId);
+      spawnIntervalId = setInterval(checkMonsterCount, 5000);
+      return;
+    }
 
       const seconds = Number(timerLabel.text.split(":")[1]);
       const minutes = Number(timerLabel.text.split(":")[0]);
       const totalSeconds = minutes * 60 + seconds;
-      const baseSpawnInterval = 3;
-      const increaseInterval = 60;
+      const baseSpawnInterval = 2;
+      const increaseInterval = 40;
 
       const spawnInterval = Math.max(
         0.1,
         baseSpawnInterval *
-          Math.pow(0.9, Math.floor(totalSeconds / increaseInterval))
+          Math.pow(0.8, Math.floor(totalSeconds / increaseInterval))
       );
       k.wait(spawnInterval, spawn);
     } else {
       k.wait(0.1, spawn);
+    }
+  }
+
+  function checkMonsterCount() {
+    if (count < maxMonsters && maxMonsterReached) {
+      maxMonsterReached = false;
+      clearInterval(spawnIntervalId);
+      spawn();
     }
   }
   spawn();

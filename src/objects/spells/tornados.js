@@ -91,7 +91,7 @@ function createTornado() {
           }, 2000);
         }
 
-        const damage = Math.floor(Math.random() * 5) + 3; // Random damage between 3 and 7
+        const damage = 5; // Random damage between 3 and 7
         e.hurt(damage);
         e.lastDamaged = now; // Update the last damaged time
 

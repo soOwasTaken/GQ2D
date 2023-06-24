@@ -166,8 +166,8 @@ export function monsterWeapon(monster) {
 
 
 export function ShieldAndAxe(monster) {
-  const ATTACK_DISTANCE = 60;
-  const ATTACK_COOLDOWN = 1;
+  const ATTACK_DISTANCE = 43;
+  const ATTACK_COOLDOWN = 2;
   const ATTACK_DAMAGE = 50;
 
   const player = Player();

@@ -25,8 +25,8 @@ export function monsterBow(monster) {
     k.area({ scale: 1 }),
   ]);
 
-  let isCharging = false; // Flag to track if the monster is charging the bow
-  let isReleasing = false; // Flag to track if the monster is releasing the arrow
+  let isCharging = false; 
+  let isReleasing = false; 
 
   function updateMonsterDirection() {
     if (!isGamePaused()) {
@@ -43,8 +43,10 @@ export function monsterBow(monster) {
       }
     }
   }
+    monster.onDestroy(() => {
+      k.destroy(bow);
+    });
 
-  // Function to handle the monster's attack logic
   function attack() {
     if (canAttack && !attackCooldown) {
       canAttack = false;
@@ -57,18 +59,16 @@ export function monsterBow(monster) {
       monster.isAttacking = true;
       let initialPlayerPos = player.pos.clone();
       let arrow;
-      k.wait(0.5, () => {
+      k.wait(1, () => {
         isCharging = true;
         bow.play("charging");
 
-        // Create a "charging arrow" without the k.move property, which will make it stationary
         let chargingArrow = k.add([
-          k.pos(bow.pos.x, bow.pos.y - 12), // Set the initial position of the arrow
-          k.sprite("arrow"), // Replace with the sprite for the arrow
+          k.pos(bow.pos.x, bow.pos.y - 12), 
+          k.sprite("arrow"),
           k.origin("center"),
           k.scale(1),
-          // no k.move(), this arrow is stationary
-          k.area({ width: 8, height: 16 }), // Adjust the arrow's collision area as needed
+          k.area({ width: 8, height: 16 }),
           "chargingArrow",
         ]);
         if (monsterDirection === "left") {
@@ -87,10 +87,7 @@ export function monsterBow(monster) {
             monster.play("run");
             return;
           }
-          // Destroy the "charging arrow"
           k.destroy(chargingArrow);
-
-          // Set the releasing flag to true
           isReleasing = true;
           // Change the sprite to the release state
           bow.play("idle"); // Set the bow sprite to the charged frame
@@ -140,7 +137,7 @@ export function monsterBow(monster) {
           });
 
           // Set a cooldown before the monster can attack again
-          k.wait(1, () => {
+          k.wait(2, () => {
             canAttack = true;
             attackCooldown = false;
             monster.isAttacking = false;
@@ -151,7 +148,6 @@ export function monsterBow(monster) {
           });
           // Cleanup function when the monster is destroyed
           monster.onDestroy(() => {
-            k.destroy(bow);
             k.destroy(flyingArrow);
             k.destroy(followCircle);
           });

@@ -448,6 +448,7 @@ export function loadAssets() {
   k.loadSprite("enemySpeed", "sprites/icons/enemyMovespeed.png");
   k.loadSprite("freezeIcon", "sprites/icons/Freezing.png");
   k.loadSprite("earthquakeIcon", "sprites/icons/earthquakeIcon.png");
+  k.loadSprite("tripleAttackIcon", "sprites/icons/tripleAttack.png");
   k.loadSprite("Freeze", "sprites/crystal_39x37-sheet.png", {
     sliceX: 25,
     anims: {

@@ -9,6 +9,7 @@ import { setEnemySpeed, getEnemySpeed } from "./monster";
 import { setFreezingEnabled } from "./spells/freeze";
 import { resetMonsterAI } from "./monster";
 import { earthquake } from "./spells/earthquake";
+import { toggleTripleAttack } from "./staff";
 const urlParams = new URLSearchParams(window.location.search);
 const level = urlParams.get("level") || 1;
 
@@ -20,37 +21,29 @@ if (level === 1) {
   actions = [
     {
       id: 1,
-      action: playAttackAnimation,
-      icon: "fireArcIcon",
-      available: true,
-      description:
-        "Attach to the player:\nA fire aura for close enemies\nDamage : 5",
-    },
-    {
-      id: 2,
       action: setCircleEnabled,
       icon: "explosionIcon",
       available: true,
       description:
-        "20% chance on hit :\nExplosion that deal area damage\nDamage : 10 to 15",
+        "15% chance on hit :\nExplosion that kill\n monster in a Area",
     },
     {
-      id: 3,
+      id: 2,
       action: spawnTornadoes,
       icon: "tornadoIcon",
       available: true,
       description:
-        "Every 5s :\nSpawn Tornadoes on close monster\nDamage :3 to 7, also slow enemy",
+        "Every 5s :\nSpawn Tornadoes on close monster\nDamage :5, also slow enemy",
     },
     {
-      id: 4,
+      id: 3,
       action: increasePlayerSpeed,
       icon: "moveSpeed",
       available: true,
-      description: "Buff :\nIncrease Player Speed\nMovespeed 120 -> 160",
+      description: "Buff :\nIncrease Player Speed\nMovespeed 120 -> 140",
     },
     {
-      id: 5,
+      id: 4,
       action: decreaseEnemySpeed,
       icon: "enemySpeed",
       available: true,
@@ -58,12 +51,20 @@ if (level === 1) {
         "Debuff :\nNew spawning monster are slower\nMovespeed 70 -> 50",
     },
     {
-      id: 6,
+      id: 5,
       action: setFreezingEnabled,
       icon: "freezeIcon",
       available: true,
       description:
         "50% chance on hit from weapon :\nFreeze Enemy for a time\nFreeze duration : 3s",
+    },
+    {
+      id: 6,
+      action: earthquake,
+      icon: "earthquakeIcon",
+      available: true,
+      description:
+        "Every 20seconds :\nA earthquake happen!\nDamage :On all monster -10",
     },
   ];
 } else if (level == 2) {
@@ -73,7 +74,7 @@ if (level === 1) {
       action: increasePlayerSpeed,
       icon: "moveSpeed",
       available: true,
-      description: "Buff :\nIncrease Player Speed\nMovespeed 120 -> 160",
+      description: "Buff :\nIncrease Player Speed\nMovespeed 120 -> 140",
     },
     {
       id: 2,
@@ -81,15 +82,7 @@ if (level === 1) {
       icon: "enemySpeed",
       available: true,
       description:
-        "Debuff :\nNew spawning monster are slower\nMovespeed 70 -> 50",
-    },
-    {
-      id: 3,
-      action: playAttackAnimation,
-      icon: "fireArcIcon",
-      available: true,
-      description:
-        "Attach to the player:\nA fire aura for close enemies\nDamage : 5",
+        "Debuff :\nNew spawning monster are slower",
     },
     {
       id: 4,
@@ -107,16 +100,24 @@ if (level === 1) {
       description:
         "Every 20seconds :\nA earthquake happen!\nDamage :On all monster -10",
     },
+    {
+      id: 6,
+      action: toggleTripleAttack,
+      icon: "tripleAttackIcon",
+      available: true,
+      description:
+        "You now shoot 3 ice spikes\nChange on Ice Spike:\nReduced damage by 50%",
+    },
   ];
 }
 
 function increasePlayerSpeed() {
   const player = getPlayer();
-  player.speed += 40;
+  player.speed += 20;
 }
 
 function decreaseEnemySpeed() {
-  const value = getEnemySpeed() - 20;
+  const value = getEnemySpeed() - 10;
   setEnemySpeed(value);
 }
 
