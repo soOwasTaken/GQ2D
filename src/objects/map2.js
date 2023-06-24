@@ -72,11 +72,8 @@ export function map2() {
 
     let background = k.add([
       k.sprite("map2"),
-      // Make the background centered on the screen
       k.pos(16, 16),
-      // Allow the background to be scaled
       k.scale(1),
-      // Keep the background position fixed even when the camera moves
     ]);
 
   return levelData;

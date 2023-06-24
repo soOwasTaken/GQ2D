@@ -299,7 +299,7 @@ export function loadAssets() {
 
   k.loadSprite("monster", "sprites/monster1.png");
   k.loadSprite("TEST", "sprites/TEST2.png");
-  k.loadSprite("map2", "sprites/map2Colisions.png");
+  k.loadSprite("map2", "sprites/map2.png");
   k.loadSprite("attack", "sprites/attack.png", {
     sliceX: 10,
     anims: {
