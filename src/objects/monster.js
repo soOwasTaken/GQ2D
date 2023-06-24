@@ -278,11 +278,9 @@ export function createMonsterLv2(extraHealth) {
       });
     } else {
       monster.destroy();
-      const index = monsters.indexOf(monster);
-      if (index > -1) {
-        increasePlayerXP(25);
-        incrementScore(10);
-      }
+      monster.isAttacking = false;
+      increasePlayerXP(25);
+      incrementScore(10);
     }
   });
   monsterWeapon(monster);
@@ -419,11 +417,8 @@ export function createWarrior(extraHealth) {
     } else {
       monster.destroy();
       monster.isAttacking = false;
-      const index = monsters.indexOf(monster);
-      if (index > -1) {
         increasePlayerXP(50);
         incrementScore(50);
-      }
     }
   });
   ShieldAndAxe(monster);
@@ -461,7 +456,7 @@ export function spawnMonsters(timerLabel) {
       monsters.splice(index, 1);
       if (index > -1) {
         count--;
-        //console.log("monster died count reduced to =", count); debugging
+        console.log("monster died count reduced to =", count);
       }
     });
   }
@@ -503,10 +498,10 @@ export function spawnMonsters(timerLabel) {
         }
       }
       count++;
-      //console.log("count =", count);
+      console.log("count =", count);
 
     if (count >= maxMonsters) {
-      //console.log("max monster reached, looping...");
+      console.log("max monster reached, looping...");
       maxMonsterReached = true;
       clearInterval(spawnIntervalId);
       spawnIntervalId = setInterval(checkMonsterCount, 5000);
