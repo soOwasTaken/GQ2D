@@ -241,7 +241,6 @@ export function createMonsterLv2(extraHealth) {
           }
         }
         let proposedPosition = monster.pos.add(separation);
-        // Check if the proposed position is within game bounds (change 780 to your game dimensions)
         if (
           proposedPosition.x >= 0 &&
           proposedPosition.y >= 0 &&
