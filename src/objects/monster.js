@@ -27,7 +27,7 @@ export function createMonster(extraHealth) {
   do {
     randomX = Math.random() * 780;
     randomY = Math.random() * 780;
-  } while (playerPos.dist({ x: randomX, y: randomY }) < 500);
+  } while (playerPos.dist({ x: randomX, y: randomY }) > 350);
 
   const monster = k.add([
     k.sprite("skel1", { anim: "run" }),
@@ -158,7 +158,7 @@ export function createMonsterLv2(extraHealth) {
   do {
     randomX = Math.random() * 780;
     randomY = Math.random() * 780;
-  } while (playerPos.dist({ x: randomX, y: randomY }) < 500);
+  } while (playerPos.dist({ x: randomX, y: randomY }) > 350);
 
   const monster = k.add([
     k.sprite("mommy", { anim: "run" }),
@@ -293,7 +293,7 @@ export function createWarrior(extraHealth) {
   do {
     randomX = Math.random() * 780;
     randomY = Math.random() * 780;
-  } while (playerPos.dist({ x: randomX, y: randomY }) < 500);
+  } while (playerPos.dist({ x: randomX, y: randomY }) > 350);
 
   const monster = k.add([
     k.sprite("warriorMommy", { anim: "run" }),

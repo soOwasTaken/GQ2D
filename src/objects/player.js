@@ -16,7 +16,7 @@ export function Player() {
     if (level === 1)
       return (6);
     else if (level === 2)
-      return (6);
+      return (5);
   }
 
   player = k.add([

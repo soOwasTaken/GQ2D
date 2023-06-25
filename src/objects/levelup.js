@@ -104,7 +104,7 @@ if (level === 1) {
       id: 5,
       action: toggleTripleAttack,
       icon: "tripleAttackIcon",
-      available: true,
+      available: false,
       description:
         "You now shoot 3 ice spikes\nChange on Ice Spike:\nReduced damage by 50%",
     },
