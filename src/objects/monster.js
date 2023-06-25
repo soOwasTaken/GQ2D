@@ -264,7 +264,7 @@ export function createMonsterLv2(extraHealth) {
   monster.on("death", () => {
       monster.destroy();
       monster.isAttacking = false;
-      increasePlayerXP(20);
+      increasePlayerXP(15);
       incrementScore(10);
     }
   );
@@ -414,7 +414,7 @@ export function createWarrior(extraHealth) {
     } else {
       monster.destroy();
       monster.isAttacking = false;
-      increasePlayerXP(50);
+      increasePlayerXP(30);
       incrementScore(50);
     }
   });
@@ -448,7 +448,7 @@ export function spawnMonsters(timerLabel) {
     k.on("destroy", "enemy", (e) => {
       const index = monsters.indexOf(e);
       if (index > -1) {
-        increasePlayerXP(20);
+        increasePlayerXP(15);
         incrementScore(10);
         monsters.splice(index, 1);
         count--;

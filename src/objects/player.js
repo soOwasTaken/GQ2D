@@ -14,7 +14,7 @@ export function Player() {
 
   function getMaxlevel() {
     if (level === 1)
-      return (7);
+      return (6);
     else if (level === 2)
       return (6);
   }

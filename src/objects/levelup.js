@@ -62,7 +62,7 @@ if (level === 1) {
       id: 6,
       action: earthquake,
       icon: "earthquakeIcon",
-      available: true,
+      available: false,
       description:
         "Every 20seconds :\nA earthquake happen!\nDamage :On all monster -10",
     },
