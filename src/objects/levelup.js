@@ -85,7 +85,7 @@ if (level === 1) {
         "Debuff :\nNew spawning monster are slower",
     },
     {
-      id: 4,
+      id: 3,
       action: spawnTornadoes,
       icon: "tornadoIcon",
       available: true,
@@ -93,7 +93,7 @@ if (level === 1) {
         "Every 5s :\nSpawn Tornadoes on close monster\nDamage :3 to 7, also slow enemy",
     },
     {
-      id: 5,
+      id: 4,
       action: earthquake,
       icon: "earthquakeIcon",
       available: true,
@@ -101,7 +101,7 @@ if (level === 1) {
         "Every 20seconds :\nA earthquake happen!\nDamage :On all monster -10",
     },
     {
-      id: 6,
+      id: 5,
       action: toggleTripleAttack,
       icon: "tripleAttackIcon",
       available: true,
@@ -145,7 +145,7 @@ export function increasePlayerXP(amount) {
   if (!player) return;
 
   player.xp += amount;
-  if (player.level < 7) {
+  if (player.level < player.maxLevel) {
     if (player.xp >= player.maxXP) {
       // Check if player has enough xp to level up
       player.level++;

@@ -3,6 +3,25 @@ import { Player } from "./player";
 import { isGamePaused } from "./pause";
 import { ENEMY_SPEED } from "./monster";
 
+const urlParams = new URLSearchParams(window.location.search);
+const level = urlParams.has("level") ? parseInt(urlParams.get("level")) : 1;
+
+function bowSprite() {
+  if (level == 1) {
+    return "bow";
+  } else if (level == 2) {
+    return "bow_gold";
+  }
+}
+
+function arrowSprite() {
+  if (level == 1) {
+    return "arrow";
+  } else if (level == 2) {
+    return "arrow_gold";
+  }
+}
+
 export function monsterBow(monster) {
   const ATTACK_DISTANCE = 160;
   let ATTACK_COOLDOWN = 1;
@@ -16,7 +35,7 @@ export function monsterBow(monster) {
 
   const bow = k.add([
     k.pos(),
-    k.sprite("bow", { anim: "idle" }),
+    k.sprite(bowSprite(), { anim: "idle" }),
     k.origin("bot"),
     k.rotate(0),
     k.scale(0.8),
@@ -25,8 +44,8 @@ export function monsterBow(monster) {
     k.area({ scale: 1 }),
   ]);
 
-  let isCharging = false; 
-  let isReleasing = false; 
+  let isCharging = false;
+  let isReleasing = false;
 
   function updateMonsterDirection() {
     if (!isGamePaused()) {
@@ -43,9 +62,9 @@ export function monsterBow(monster) {
       }
     }
   }
-    monster.onDestroy(() => {
-      k.destroy(bow);
-    });
+  monster.onDestroy(() => {
+    k.destroy(bow);
+  });
 
   function attack() {
     if (canAttack && !attackCooldown) {
@@ -64,8 +83,8 @@ export function monsterBow(monster) {
         bow.play("charging");
 
         let chargingArrow = k.add([
-          k.pos(bow.pos.x, bow.pos.y - 12), 
-          k.sprite("arrow"),
+          k.pos(bow.pos.x, bow.pos.y - 12),
+          k.sprite(arrowSprite()),
           k.origin("center"),
           k.scale(1),
           k.area({ width: 8, height: 16 }),
@@ -75,7 +94,15 @@ export function monsterBow(monster) {
           chargingArrow.flipX(true);
         }
         // In the releasing phase
-        k.wait(0.5, () => {
+        function attackSpeedBow() {
+          if (level == 1) {
+            return 0.5;
+          } else if (level == 2) {
+            return 0.3;
+          }
+        }
+
+        k.wait(attackSpeedBow(), () => {
           // Check if player has moved too far
           if (initialPlayerPos.dist(player.pos) > 120) {
             // Player has moved too far, cancel shot
@@ -94,23 +121,40 @@ export function monsterBow(monster) {
 
           const direction = player.pos.sub(bow.pos).unit();
 
+          function arrowSpeedperLevel() {
+            if (level == 1) {
+              return 150;
+            } else if (level == 2) {
+              return 200;
+            }
+          }
+
           // Create a "flying arrow" with the k.move property
           let flyingArrow = k.add([
             k.pos(bow.pos.x, bow.pos.y - 12), // Set the initial position of the arrow
-            k.sprite("arrow"), // Replace with the sprite for the arrow
+            k.sprite(arrowSprite()), // Replace with the sprite for the arrow
             k.origin("center"),
             k.scale(0.8),
             k.rotate(Math.atan2(direction.y, direction.x) * (180 / Math.PI)),
-            k.move(direction, 150),
+            k.move(direction, arrowSpeedperLevel()),
             k.outview({ destroy: true }),
             k.area({ width: 8, height: 16 }), // Adjust the arrow's collision area as needed
             "flyingArrow",
           ]);
+
+          function hitboxlevelcolorChanger() {
+            if (level == 1) {
+              return k.rgb(180, 0, 0);
+            } else if (level == 2) {
+              return k.rgb(0, 180, 180);
+            }
+          }
+
           let followCircle = k.add([
             k.pos(flyingArrow.pos.x, flyingArrow.pos.y), // Set the initial position of the circle
-            k.color(180, 0, 0), // Set the color of the circle to red with 0.2 opacity
-            k.circle(8), // Set the size of the circle
-            k.follow(flyingArrow, vec2(0, 0)), // Make the circle follow the flying arrow
+            k.color(hitboxlevelcolorChanger()),
+            k.circle(8), //
+            k.follow(flyingArrow, vec2(0, 0)),
             k.opacity(0.2),
             k.area({ width: 8, height: 8 }),
             k.outview({ destroy: true }),
@@ -137,7 +181,14 @@ export function monsterBow(monster) {
           });
 
           // Set a cooldown before the monster can attack again
-          k.wait(2, () => {
+          function levelCooldown() {
+            if (level == 1) {
+              return 2;
+            } else if (level == 2) {
+              return 1;
+            }
+          }
+          k.wait(levelCooldown(), () => {
             canAttack = true;
             attackCooldown = false;
             monster.isAttacking = false;

@@ -6,9 +6,9 @@ import { isGamePaused, isSpawningAllowed, isLevelUpPaused } from "./pause";
 import { monsterBow } from "./bowWeapon";
 import { incrementScore } from "../scenes/score";
 export let monsters = [];
-export let ENEMY_SPEED = 50;
+export let ENEMY_SPEED = 55;
 const urlParams = new URLSearchParams(window.location.search);
-const level = urlParams.get("level") || 1;
+const level = urlParams.has("level") ? parseInt(urlParams.get("level")) : 1;
 
 export function setEnemySpeed(value) {
   ENEMY_SPEED = value;
@@ -152,7 +152,7 @@ export function createMonsterLv2(extraHealth) {
   const player = Player();
   const playerPos = player.pos;
   const minDistance = 40;
-  setEnemySpeed(30);
+  setEnemySpeed(60);
 
   let randomX, randomY;
   do {
@@ -166,7 +166,7 @@ export function createMonsterLv2(extraHealth) {
     k.area({ height: 55, weight: 40 }),
     k.scale(1),
     k.origin("center"),
-    k.health(20 + extraHealth),
+    k.health(40 + extraHealth),
     "enemy",
     {
       direction: 1,
@@ -175,9 +175,9 @@ export function createMonsterLv2(extraHealth) {
       isAffectedByTornado: false,
       isFrozen: false,
       bowEquiped: false,
-      damage: 10,
+      damage: 15,
       corpse: false,
-      revives: 1,
+      revives: 0,
       dead: false,
     },
   ]);
@@ -262,28 +262,26 @@ export function createMonsterLv2(extraHealth) {
     }
   });
   monster.on("death", () => {
-    if (monster.revives > 0) {
-      monster.revives--;
-      monster.dead = true;
-      monster.play("death");
-      k.wait(3.5, () => {
-        monster.heal(20);
-        monster.dead = false;
-        monster.play("falling");
-        k.wait(0.2, () => {
-          monster.play("run");
-          monsterWeapon(monster);
-        });
-      });
-    } else {
       monster.destroy();
       monster.isAttacking = false;
-      increasePlayerXP(25);
+      increasePlayerXP(20);
       incrementScore(10);
     }
-  });
-  monsterWeapon(monster);
+  );
+
+  if (Math.random() < 0.20) {
+    monsterBow(monster);
+    monster.bowEquiped = true; // range with bow monster only one can be enabled at time
+  } else {
+    monsterWeapon(monster); // melee monster
+  }
+  if (monster.bowEquiped == true) {
+    monster.onDestroy(() => {
+      monster.bowEquiped = false;
+    });
+  }
   return monster;
+
 }
 export function createWarrior(extraHealth) {
   const player = Player();
@@ -416,8 +414,8 @@ export function createWarrior(extraHealth) {
     } else {
       monster.destroy();
       monster.isAttacking = false;
-        increasePlayerXP(50);
-        incrementScore(50);
+      increasePlayerXP(50);
+      incrementScore(50);
     }
   });
   ShieldAndAxe(monster);
@@ -432,7 +430,15 @@ export function resetMonsterAI() {
 }
 
 export function spawnMonsters(timerLabel) {
-  const maxMonsters = 70; // Maximum number of monsters
+  let maxMonsters;
+
+  if (level === 1) {
+    maxMonsters = 70;
+    console.log("level 1, max monster =", maxMonsters);
+  } else if (level === 2) {
+    maxMonsters = 35;
+    console.log("level 1, max monster =", maxMonsters);
+  }
   let count = 0;
   let waveNumber = 1;
   let spawnIntervalId = null;
@@ -442,7 +448,7 @@ export function spawnMonsters(timerLabel) {
     k.on("destroy", "enemy", (e) => {
       const index = monsters.indexOf(e);
       if (index > -1) {
-        increasePlayerXP(25);
+        increasePlayerXP(20);
         incrementScore(10);
         monsters.splice(index, 1);
         count--;
@@ -494,24 +500,25 @@ export function spawnMonsters(timerLabel) {
         createMonsterLv2(0);
         if (count % 5 === 0 && count !== 0) {
           createWarrior(0);
+          count++;
         }
       }
       count++;
       console.log("count =", count);
 
-    if (count >= maxMonsters) {
-      console.log("max monster reached, looping...");
-      maxMonsterReached = true;
-      clearInterval(spawnIntervalId);
-      spawnIntervalId = setInterval(checkMonsterCount, 5000);
-      return;
-    }
+      if (count >= maxMonsters) {
+        console.log("max monster reached, looping...");
+        maxMonsterReached = true;
+        clearInterval(spawnIntervalId);
+        spawnIntervalId = setInterval(checkMonsterCount, 5000);
+        return;
+      }
 
       const seconds = Number(timerLabel.text.split(":")[1]);
       const minutes = Number(timerLabel.text.split(":")[0]);
       const totalSeconds = minutes * 60 + seconds;
       const baseSpawnInterval = 2;
-      const increaseInterval = 40;
+      const increaseInterval = 120;
 
       const spawnInterval = Math.max(
         0.1,

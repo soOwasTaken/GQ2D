@@ -3,10 +3,20 @@ import { isGamePaused, togglePause, isLevelUpPaused } from "./pause";
 import { earthquake } from "./spells/earthquake";
 let player;
 
+const urlParams = new URLSearchParams(window.location.search);
+const level = urlParams.has("level") ? parseInt(urlParams.get("level")) : 1;
+
 
 export function Player() {
   if (player) {
     return player;
+  }
+
+  function getMaxlevel() {
+    if (level === 1)
+      return (7);
+    else if (level === 2)
+      return (6);
   }
 
   player = k.add([
@@ -23,7 +33,7 @@ export function Player() {
       level: 1,
       maxXP: 200,
       speed: 120,
-      maxLevel: 6,
+      maxLevel: getMaxlevel(),
     },
   ]);
 
@@ -60,9 +70,10 @@ export function Player() {
       player.move(0, player.speed);
     }
   });
-    onKeyDown("x", () => {
-      //earthquake(); using this to test stuff
-    });
+onKeyPress("x", () => {
+  const allGameObjects = get();
+  console.log("Number of game objects:", allGameObjects.length);
+});
 
   onKeyPress(["left", "right", "up", "down", "z", "q", "s", "d"], () => {
     if (!isGamePaused()) {

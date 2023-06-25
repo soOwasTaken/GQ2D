@@ -99,7 +99,7 @@ export function staff() {
                 movingSpikeExists = true;
 
                 const spikeAngles = tripleAttack ? [0, 1, -1] : [0];
-                const speed = 300;
+                const speed = 500;
                 const spikeDamage = tripleAttack ? 15 : 30;
 
                 for (let i = 0; i < spikeAngles.length; i++) {

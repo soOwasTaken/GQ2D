@@ -149,10 +149,10 @@ function createExperienceBar() {
   ]);
 
   player.onUpdate(() => {
-    if (player.level < 9) {
+    if (player.level < player.maxLevel) {
       expBar.set(player.xp);
       levelMaxText.text = ""; // clear the text
-    } else {
+    } else if (player.level === player.maxLevel) {
       // If level is 3 or more, hide the XP bar and show "Level Max"
       destroy(expBar);
       destroy(maxExpBar);

@@ -499,6 +499,23 @@ export function loadAssets() {
       width: 16,
       height: 32,
     },
+      bow_gold: {
+      x: 48,
+      y: 48,
+      width: 48,
+      height: 32,
+      sliceX: 3,
+      anims: {
+        idle: 0,
+        charging: { from: 0, to: 2 },
+      },
+    },
+    arrow_gold: {
+      x: 32,
+      y: 0,
+      width: 16,
+      height: 16,
+    },
   });
   k.loadSprite("iceSpike", "sprites/IcePick_64x64.png", {
     sliceX: 30,
