@@ -5,10 +5,11 @@ const level = urlParams.get("level") || 1;
 
 function weaponSprite() {
   if (level == 1) {
-    return ("bone_axe");
-  }
-  else if (level == 2) {
-    return ("gold_sword");
+    return "bone_axe";
+  } else if (level == 2) {
+    return "gold_sword";
+  } else if (level == 3) {
+    return "fire_sword";
   }
 }
 
@@ -151,7 +152,11 @@ export function monsterWeapon(monster) {
     monster.on("death", () => {
       k.destroy(weapon);
     });
-  }
+  } else if (level == 3) {
+    monster.on("death", () => {
+      k.destroy(weapon);
+    });
+  } 
 
   k.loop(1, () => {
     if (!weapon.isSwinging) {
@@ -162,6 +167,23 @@ export function monsterWeapon(monster) {
     updateMonsterDirection();
     attack();
   });
+}
+
+
+function weaponSprite2() {
+  if (level == 2) {
+    return "gold_axe";
+  } else if (level == 3) {
+    return "bigFire_sword";
+  }
+}
+
+function shieldSprite2() {
+  if (level == 2) {
+    return "shield";
+  } else if (level == 3) {
+    return "fire_shield";
+  }
 }
 
 
@@ -178,7 +200,7 @@ export function ShieldAndAxe(monster) {
 
   const weapon = k.add([
     k.pos(),
-    k.sprite("gold_axe"),
+    k.sprite(weaponSprite2()),
     k.origin("bot"),
     k.rotate(0),
     k.scale(1.2),
@@ -189,7 +211,7 @@ export function ShieldAndAxe(monster) {
   ]);
   const shield = k.add([
     k.pos(),
-    k.sprite("shield"),
+    k.sprite(shieldSprite2()),
     k.origin("bot"),
     k.rotate(0),
     k.scale(1),

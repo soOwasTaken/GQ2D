@@ -11,6 +11,8 @@ function bowSprite() {
     return "bow";
   } else if (level == 2) {
     return "bow_gold";
+  } else if (level == 3) {
+    return "bow_fire";
   }
 }
 
@@ -19,6 +21,8 @@ function arrowSprite() {
     return "arrow";
   } else if (level == 2) {
     return "arrow_gold";
+  } else if (level == 3) {
+    return "arrow_fire";
   }
 }
 
@@ -97,7 +101,7 @@ export function monsterBow(monster) {
         function attackSpeedBow() {
           if (level == 1) {
             return 0.5;
-          } else if (level == 2) {
+          } else {
             return 0.3;
           }
         }
@@ -124,7 +128,7 @@ export function monsterBow(monster) {
           function arrowSpeedperLevel() {
             if (level == 1) {
               return 150;
-            } else if (level == 2) {
+            } else {
               return 200;
             }
           }
@@ -145,7 +149,7 @@ export function monsterBow(monster) {
           function hitboxlevelcolorChanger() {
             if (level == 1) {
               return k.rgb(180, 0, 0);
-            } else if (level == 2) {
+            } else {
               return k.rgb(0, 180, 180);
             }
           }
@@ -184,7 +188,7 @@ export function monsterBow(monster) {
           function levelCooldown() {
             if (level == 1) {
               return 2;
-            } else if (level == 2) {
+            } else {
               return 1;
             }
           }

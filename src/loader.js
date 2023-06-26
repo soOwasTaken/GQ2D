@@ -54,7 +54,6 @@ export function loadAssets() {
 
   k.loadSprite("monster", "sprites/monster1.png");
   k.loadSprite("TEST", "sprites/TEST2.png");
-  k.loadSprite("map2", "sprites/map2Colisions.png");
   k.loadSprite("attack", "sprites/attack.png", {
     sliceX: 10,
     anims: {
@@ -227,14 +226,6 @@ export function loadAssets() {
       height: 48,
     },
   });
-  k.loadSpriteAtlas("sprites/Desert-Gold.png", {
-    staff: {
-      x: 112,
-      y: 0,
-      width: 16,
-      height: 48,
-    },
-  });
   k.loadSprite("iceSpike", "sprites/IcePick_64x64.png", {
     sliceX: 30,
     anims: {
@@ -300,6 +291,7 @@ export function loadAssets() {
   k.loadSprite("monster", "sprites/monster1.png");
   k.loadSprite("TEST", "sprites/TEST2.png");
   k.loadSprite("map2", "sprites/map2.png");
+  k.loadSprite("map3", "sprites/map3.png");
   k.loadSprite("attack", "sprites/attack.png", {
     sliceX: 10,
     anims: {
@@ -564,4 +556,92 @@ export function loadAssets() {
       },
     },
   });
+  k.loadSpriteAtlas("sprites/guns.png", {
+    "gun": {
+      x: 64,
+      y: 81,
+      width: 32,
+      height: 16,
+    },
+  });
+    k.loadSprite("shooting", "sprites/shooting.png", {
+      sliceX: 4,
+      anims: {
+        shoot: {
+          from: 0,
+          to: 3,
+          loop: false,
+          speed: 10,
+        },
+      },
+    });
+    k.loadSprite("lavaMob", "sprites/lavaMob.png", {
+      sliceX: 9,
+      anims: {
+        run: {
+          from: 0,
+          to: 5,
+          loop: true,
+          speed: 10,
+        },
+        idle: {
+          from: 6,
+          to: 8,
+        },
+      },
+    });
+      k.loadSprite("golem", "sprites/golem.png", {
+        sliceX: 6,
+        anims: {
+          run: {
+            from: 0,
+            to: 5,
+            loop: true,
+            speed: 10,
+          },
+        },
+      });
+    k.loadSpriteAtlas("sprites/Fire_Weapons.png", {
+      fire_staff: {
+        x: 112,
+        y: 0,
+        width: 16,
+        height: 48,
+      },
+      fire_sword: {
+        x: 32.1,
+        y: 16,
+        width: 15.8,
+        height: 29,
+      },
+      bigFire_sword: {
+        x: 0,
+        y: 0,
+        width: 16,
+        height: 48,
+      },
+      fire_shield: {
+        x: 118,
+        y: 48,
+        width: 20,
+        height: 32,
+      },
+      bow_fire: {
+        x: 48,
+        y: 48,
+        width: 48,
+        height: 32,
+        sliceX: 3,
+        anims: {
+          idle: 0,
+          charging: { from: 0, to: 2 },
+        },
+      },
+      arrow_fire: {
+        x: 32,
+        y: 0,
+        width: 16,
+        height: 16,
+      },
+    });
 }

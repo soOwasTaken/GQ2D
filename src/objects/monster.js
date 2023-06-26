@@ -148,6 +148,15 @@ export function createMonster(extraHealth) {
   }
   return monster;
 }
+
+function map3Spritev1() {
+  if (level == 2) {
+    return "mommy";
+  } else if (level == 3) {
+    return "lavaMob";
+  }
+}
+
 export function createMonsterLv2(extraHealth) {
   const player = Player();
   const playerPos = player.pos;
@@ -161,7 +170,7 @@ export function createMonsterLv2(extraHealth) {
   } while (playerPos.dist({ x: randomX, y: randomY }) > 350);
 
   const monster = k.add([
-    k.sprite("mommy", { anim: "run" }),
+    k.sprite(map3Spritev1(), { anim: "run" }),
     k.pos(randomX, randomY),
     k.area({ height: 55, weight: 40 }),
     k.scale(1),
@@ -262,14 +271,13 @@ export function createMonsterLv2(extraHealth) {
     }
   });
   monster.on("death", () => {
-      monster.destroy();
-      monster.isAttacking = false;
-      increasePlayerXP(15);
-      incrementScore(10);
-    }
-  );
+    monster.destroy();
+    monster.isAttacking = false;
+    increasePlayerXP(15);
+    incrementScore(10);
+  });
 
-  if (Math.random() < 0.20) {
+  if (Math.random() < 0.2) {
     monsterBow(monster);
     monster.bowEquiped = true; // range with bow monster only one can be enabled at time
   } else {
@@ -281,8 +289,16 @@ export function createMonsterLv2(extraHealth) {
     });
   }
   return monster;
-
 }
+
+function map3Sprite() {
+  if (level == 2) {
+    return "warriorMommy";
+  } else if (level == 3) {
+    return "golem";
+  }
+}
+
 export function createWarrior(extraHealth) {
   const player = Player();
   const playerPos = player.pos;
@@ -296,7 +312,7 @@ export function createWarrior(extraHealth) {
   } while (playerPos.dist({ x: randomX, y: randomY }) > 350);
 
   const monster = k.add([
-    k.sprite("warriorMommy", { anim: "run" }),
+    k.sprite(map3Sprite(), { anim: "run" }),
     k.pos(randomX, randomY),
     k.area({ scale: 1.3 }),
     k.scale(1.5),
@@ -479,6 +495,8 @@ export function spawnMonsters(timerLabel) {
           createMonster(extraHealth);
         } else if (level == 2) {
           createMonsterLv2(extraHealth);
+        } else if (level == 3) {
+          //createMonsterLv2(extraHealth);
         }
         count++;
       }
@@ -495,7 +513,7 @@ export function spawnMonsters(timerLabel) {
     if (isSpawningAllowed()) {
       if (level == 1) {
         createMonster(0);
-      } else if (level == 2) {
+      } else {
         //createWarrior(0);
         createMonsterLv2(0);
         if (count % 5 === 0 && count !== 0) {

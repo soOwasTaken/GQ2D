@@ -13,6 +13,8 @@ import { isGamePaused } from "../objects/pause";
 import { resetScore } from "./score";
 import { resetMonsterAI } from "../objects/monster";
 import { staff } from "../objects/staff";
+import { map3 } from "../objects/map3";
+import { gun } from "../objects/gun";
 
 const urlParams = new URLSearchParams(window.location.search);
 const level = urlParams.get("level") || 1; // Default to level 1 if no level parameter is provided
@@ -35,6 +37,10 @@ export function mainScene() {
     console.log("Loading map for level 2");
     map2();
     staff();
+  } else if (level == 3) {
+    console.log("Loading map for level 3");
+    map3();
+    gun();
   }
   // createMonster(); // to spawn a single monster
   Player();
