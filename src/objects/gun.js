@@ -53,7 +53,7 @@ export function gun() {
       reloadBar.pos.y = reloadBarBg.pos.y = player.pos.y - 20;
 
       if (shotCount === 2 && currentTime - lastShot < 1) {
-        reloadBar.width = 30 * (1 - (currentTime - lastShot) / 1);
+        reloadBar.width = 30 * ((currentTime - lastShot) / 1); // Update the width
       }
 
       // Destroy both reloading bars after cooldown
@@ -77,7 +77,6 @@ export function gun() {
 
       // Create the reloading bar when player shoots
       if (shotCount === 2) {
-        // Create the background bar
         reloadBarBg = k.add([
           k.pos(player.pos.x - 15, player.pos.y - 20),
           k.rect(30, 3),
@@ -85,10 +84,9 @@ export function gun() {
           k.origin("left"),
         ]);
 
-        // Create the reloading bar
         reloadBar = k.add([
           k.pos(player.pos.x - 15, player.pos.y - 20),
-          k.rect(30, 3),
+          k.rect(0, 3), // Set initial width to 0
           k.color(255, 0, 0),
           k.origin("left"),
         ]);
