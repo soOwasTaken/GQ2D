@@ -6,7 +6,7 @@ import { monsterBow } from "./bowWeapon";
 let playerDirection = "right";
 let shotCount = 0;
 let lastShot = 0;
-let maxShotCount = 2;
+let maxShotCount = getMaxShotCount();
 let reloadBar;
 let reloadBarBg;
 let fastReload = false;
@@ -112,6 +112,7 @@ k.onKeyPress("space", () => {
         k.rect(30, 3),
         k.color(200, 200, 200),
         k.origin("left"),
+        k.lifespan(3),
       ]);
 
       reloadBar = k.add([
@@ -119,6 +120,7 @@ k.onKeyPress("space", () => {
         k.rect(0, 3),
         k.color(255, 0, 0),
         k.origin("left"),
+        k.lifespan(3),
       ]);
     }
 

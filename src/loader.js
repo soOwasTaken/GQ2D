@@ -197,6 +197,8 @@ export function loadAssets() {
   });
   k.loadSprite("tornadoIcon", "sprites/icons/tornado.png");
   k.loadSprite("fireArcIcon", "sprites/icons/FireArc.png");
+  k.loadSprite("SpikeFasterIcon", "sprites/icons/SpikeFasterIcon.png");
+  k.loadSprite("MoreDamageStaffIcon", "sprites/icons/MoreDamageStaffIcon.png");
   k.loadSprite("explosionIcon", "sprites/icons/explosion.png");
   k.loadSprite("moveSpeed", "sprites/icons/movespeed.png");
   k.loadSprite("enemySpeed", "sprites/icons/enemyMovespeed.png");

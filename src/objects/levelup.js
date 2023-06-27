@@ -9,7 +9,7 @@ import { setEnemySpeed, getEnemySpeed } from "./monster";
 import { setFreezingEnabled } from "./spells/freeze";
 import { resetMonsterAI } from "./monster";
 import { earthquake } from "./spells/earthquake";
-import { toggleTripleAttack } from "./staff";
+import { toggleTripleAttack, toggleMoreDamageStaff, toggleAttackSpeed } from "./staff";
 import { toggleExtraLoad, toggleFastReload, toggleMoreBullets, toggleMoreDamage } from "./gun";
 const urlParams = new URLSearchParams(window.location.search);
 const level = urlParams.has("level") ? parseInt(urlParams.get("level")) : 1;
@@ -107,6 +107,20 @@ if (level === 1) {
       available: false,
       description:
         "You now shoot 3 ice spikes\nChange on Ice Spike:\nReduced damage by 50%",
+    },
+    {
+      id: 6,
+      action: toggleAttackSpeed,
+      icon: "SpikeFasterIcon",
+      available: true,
+      description: "Your Ice Spike now\nmove faster\nSpike movespeed : +40%",
+    },
+    {
+      id: 7,
+      action: toggleMoreDamageStaff,
+      icon: "SpikeFasterIcon",
+      available: true,
+      description: "Improved Ice Spike\nSpike damage : 20 -> 30",
     },
   ];
 } else if (level == 3) {

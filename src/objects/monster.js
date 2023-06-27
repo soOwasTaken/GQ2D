@@ -491,9 +491,9 @@ export function spawnMonsters(timerLabel) {
       if (level == 1) {
         extraHealth = 5 * totalMinutes;
       } else if (level == 2) {
-        extraHealth = 10 * totalMinutes;
+        extraHealth = 7 * totalMinutes;
       } else if (level == 3) {
-        extraHealth = 15 * totalMinutes;
+        extraHealth = 10 * totalMinutes;
       }
 
       const monstersInWave = 1 + 2 * waveNumber;

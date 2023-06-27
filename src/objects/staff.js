@@ -7,9 +7,19 @@ let playerDirection = "right";
 let attackingDirection = "right";
 
 let tripleAttack = false;
+let moreDamageStaff = false;
+let attackSpeed = false;
 
 export function toggleTripleAttack() {
   tripleAttack = !tripleAttack;
+}
+
+export function toggleMoreDamageStaff() {
+  moreDamageStaff = !moreDamageStaff;
+}
+
+export function toggleAttackSpeed() {
+  attackSpeed = !attackSpeed;
 }
 
 export function staff() {
@@ -99,8 +109,8 @@ export function staff() {
                 movingSpikeExists = true;
 
                 const spikeAngles = tripleAttack ? [0, 1, -1] : [0];
-                const speed = 500;
-                const spikeDamage = tripleAttack ? 15 : 30;
+                const speed = attackSpeed ? 550 : 350;
+                const spikeDamage = moreDamageStaff ? 30 : 20;
 
                 for (let i = 0; i < spikeAngles.length; i++) {
                   let angle = spikeAngles[i];
