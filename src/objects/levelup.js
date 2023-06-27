@@ -118,7 +118,7 @@ if (level === 1) {
     {
       id: 7,
       action: toggleMoreDamageStaff,
-      icon: "SpikeFasterIcon",
+      icon: "MoreDamageStaffIcon",
       available: true,
       description: "Improved Ice Spike\nSpike damage : 20 -> 30",
     },

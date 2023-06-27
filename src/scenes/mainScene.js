@@ -53,14 +53,20 @@ export function loadMainScene() {
 }
 
 export function startScene() {
+   k.add([
+     k.sprite("logo-v2"),
+     k.pos(k.width() / 2, k.height() / 2 - 70), // Center the button
+     k.origin("center"),
+     k.scale(0.17),
+   ]);
   k.add([
-    k.text("Play", 32), // Change the size as necessary
-    k.pos(k.width() / 2, k.height() / 2), // Center the button
+    k.text("Play", 28), // Change the size as necessary
+    k.pos(k.width() / 2, k.height() / 2 + 30), // Center the button
     k.origin("center"),
   ]);
   k.add([
-    k.text("Press any key to start"), // Change the size as necessary
-    k.pos(k.width() / 2, k.height() / 2 + 50), // Center the button
+    k.text("Click on Screen\nand press any key to Start!"), // Change the size as necessary
+    k.pos(k.width() / 2, k.height() / 2 + 90), // Center the button
     k.origin("center"),
     k.scale(0.3),
   ]);
