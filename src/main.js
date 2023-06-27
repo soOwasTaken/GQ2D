@@ -48,7 +48,7 @@ scene("lose", (score) => {
       const playerScore = getScore();
 
       // Include the session ID when sending the score
-      if (level === 1) {
+      if (level == 1) {
         fetch("/game-2d/score", {
           method: "POST",
           headers: {
@@ -71,7 +71,7 @@ scene("lose", (score) => {
           .catch((error) => {
             console.error("Error:", error);
           });
-      } else if (level === 2) {
+      } else if (level == 2) {
         fetch("/game-2d/score", {
           method: "POST",
           headers: {
@@ -94,7 +94,7 @@ scene("lose", (score) => {
           .catch((error) => {
             console.error("Error:", error);
           });
-      } else if (level === 3) {
+      } else if (level == 3) {
         fetch("/game-2d/score", {
           method: "POST",
           headers: {
