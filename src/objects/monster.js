@@ -27,7 +27,7 @@ export function createMonster(extraHealth) {
   do {
     randomX = Math.random() * 780;
     randomY = Math.random() * 780;
-  } while (playerPos.dist({ x: randomX, y: randomY }) > 350);
+  } while (playerPos.dist({ x: randomX, y: randomY }) < 350);
 
   const monster = k.add([
     k.sprite("skel1", { anim: "run" }),
@@ -167,7 +167,7 @@ export function createMonsterLv2(extraHealth) {
   do {
     randomX = Math.random() * 780;
     randomY = Math.random() * 780;
-  } while (playerPos.dist({ x: randomX, y: randomY }) > 350);
+  } while (playerPos.dist({ x: randomX, y: randomY }) < 350);
 
   const monster = k.add([
     k.sprite(map3Spritev1(), { anim: "run" }),
@@ -309,7 +309,7 @@ export function createWarrior(extraHealth) {
   do {
     randomX = Math.random() * 780;
     randomY = Math.random() * 780;
-  } while (playerPos.dist({ x: randomX, y: randomY }) > 350);
+  } while (playerPos.dist({ x: randomX, y: randomY }) < 350);
 
   const monster = k.add([
     k.sprite(map3Sprite(), { anim: "run" }),
@@ -484,10 +484,17 @@ export function spawnMonsters(timerLabel) {
 
   function spawnWave() {
     if (isSpawningAllowed()) {
+      let extraHealth;
       const seconds = Number(timerLabel.text.split(":")[1]);
       const minutes = Number(timerLabel.text.split(":")[0]);
       const totalMinutes = minutes + Math.floor(seconds / 60);
-      let extraHealth = 5 * totalMinutes;
+      if (level == 1) {
+        extraHealth = 5 * totalMinutes;
+      } else if (level == 2) {
+        extraHealth = 10 * totalMinutes;
+      } else if (level == 3) {
+        extraHealth = 15 * totalMinutes;
+      }
 
       const monstersInWave = 1 + 2 * waveNumber;
       for (let i = 0; i < monstersInWave; i++) {
@@ -510,14 +517,24 @@ export function spawnMonsters(timerLabel) {
   }
 
   function spawn() {
+    let extraHealth;
+    const seconds = Number(timerLabel.text.split(":")[1]);
+    const minutes = Number(timerLabel.text.split(":")[0]);
+    const totalMinutes = minutes + Math.floor(seconds / 60);
+    if (level == 1) {
+      extraHealth = 5 * totalMinutes;
+    } else if (level == 2) {
+      extraHealth = 7 * totalMinutes;
+    } else if (level == 3) {
+      extraHealth = 12 * totalMinutes;
+    }
     if (isSpawningAllowed()) {
       if (level == 1) {
-        createMonster(0);
+        createMonster(extraHealth);
       } else {
-        //createWarrior(0);
-        createMonsterLv2(0);
+        createMonsterLv2(extraHealth);
         if (count % 5 === 0 && count !== 0) {
-          createWarrior(0);
+          createWarrior(extraHealth * 2);
           count++;
         }
       }

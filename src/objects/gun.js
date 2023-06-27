@@ -6,8 +6,34 @@ import { monsterBow } from "./bowWeapon";
 let playerDirection = "right";
 let shotCount = 0;
 let lastShot = 0;
+let maxShotCount = 2;
 let reloadBar;
 let reloadBarBg;
+let fastReload = false;
+let extraLoad = false;
+let moreDamage = false;
+let moreBullets = false;
+
+export function toggleFastReload() {
+  fastReload = !fastReload;
+}
+
+export function toggleMoreDamage() {
+  moreDamage = !moreDamage;
+}
+
+export function toggleMoreBullets() {
+  moreBullets = !moreBullets;
+}
+
+export function toggleExtraLoad() {
+  extraLoad = !extraLoad;
+  maxShotCount = extraLoad ? 3 : 2;
+}
+
+function getMaxShotCount() {
+  return extraLoad ? 3 : 2;
+}
 
 export function gun() {
   const player = Player();
@@ -40,6 +66,7 @@ export function gun() {
     gun.pos.x = player.pos.x;
     gun.pos.y = player.pos.y + 3.5;
     const currentTime = k.time();
+    const reloadSpeed = fastReload ? 0.7 : 1; 
 
     if (shootAnim) {
       shootAnim.pos.x =
@@ -47,17 +74,19 @@ export function gun() {
       shootAnim.pos.y = gun.pos.y;
     }
 
-    // Update the position and width of the reload bar above the player
     if (reloadBar && reloadBarBg) {
       reloadBar.pos.x = reloadBarBg.pos.x = player.pos.x - 15;
       reloadBar.pos.y = reloadBarBg.pos.y = player.pos.y - 20;
 
-      if (shotCount === 2 && currentTime - lastShot < 1) {
-        reloadBar.width = 30 * ((currentTime - lastShot) / 1); // Update the width
-      }
+    if (
+      shotCount === getMaxShotCount() &&
+      currentTime - lastShot < reloadSpeed
+    ) {
+      reloadBar.width = 30 * ((currentTime - lastShot) / reloadSpeed);
+    }
 
       // Destroy both reloading bars after cooldown
-      if (currentTime - lastShot >= 1) {
+      if (currentTime - lastShot >= reloadSpeed) {
         reloadBar.destroy();
         reloadBar = null;
         reloadBarBg.destroy();
@@ -66,73 +95,78 @@ export function gun() {
     }
   });
 
-  k.onKeyPress("space", () => {
-    const currentTime = k.time();
-    if (shotCount < 2 || currentTime - lastShot >= 1) {
-      if (shotCount >= 2) {
-        shotCount = 0;
-      }
-      lastShot = currentTime;
-      shotCount++;
+k.onKeyPress("space", () => {
+  const currentTime = k.time();
+  const reloadSpeed = fastReload ? 0.7 : 1;
 
-      // Create the reloading bar when player shoots
-      if (shotCount === 2) {
-        reloadBarBg = k.add([
-          k.pos(player.pos.x - 15, player.pos.y - 20),
-          k.rect(30, 3),
-          k.color(200, 200, 200),
-          k.origin("left"),
-        ]);
+  if (shotCount < getMaxShotCount() || currentTime - lastShot >= reloadSpeed) {
+    if (shotCount >= getMaxShotCount()) {
+      shotCount = 0;
+    }
+    lastShot = currentTime;
+    shotCount++;
 
-        reloadBar = k.add([
-          k.pos(player.pos.x - 15, player.pos.y - 20),
-          k.rect(0, 3), // Set initial width to 0
-          k.color(255, 0, 0),
-          k.origin("left"),
-        ]);
-      }
+    if (shotCount === getMaxShotCount()) {
+      reloadBarBg = k.add([
+        k.pos(player.pos.x - 15, player.pos.y - 20),
+        k.rect(30, 3),
+        k.color(200, 200, 200),
+        k.origin("left"),
+      ]);
 
-      if (shootAnim) {
-        shootAnim.destroy();
-      }
+      reloadBar = k.add([
+        k.pos(player.pos.x - 15, player.pos.y - 20),
+        k.rect(0, 3),
+        k.color(255, 0, 0),
+        k.origin("left"),
+      ]);
+    }
 
-      shootAnim = k.add([
+    if (shootAnim) {
+      shootAnim.destroy();
+    }
+
+    shootAnim = k.add([
+      k.pos(
+        playerDirection == "right" ? gun.pos.x + 17 : gun.pos.x - 17,
+        gun.pos.y
+      ),
+      k.sprite("shooting", { anim: "shoot" }),
+      k.origin("center"),
+      k.scale(0.3),
+      k.lifespan(0.5),
+    ]);
+
+    if (playerDirection == "left") {
+      shootAnim.flipX(true);
+    }
+
+    // angles in degrees for the bullets
+    let angles = [-10, -5, 0, 5, 10];
+
+    if (moreBullets) {
+      angles = [-10, -5, -2, 2, 5, 10];
+    }
+
+    angles.forEach((angle) => {
+      let bullet = k.add([
         k.pos(
           playerDirection == "right" ? gun.pos.x + 17 : gun.pos.x - 17,
           gun.pos.y
         ),
-        k.sprite("shooting", { anim: "shoot" }),
-        k.origin("center"),
-        k.scale(0.3),
-        k.lifespan(0.5),
+        k.rect(2, 2),
+        k.color(255, 0, 0),
+        k.area({ scale: 1 }),
+        k.outview({ destroy: true }),
+        "bullet",
+        {
+          speed: 300,
+          angle: playerDirection == "right" ? angle : 180 - angle,
+        },
       ]);
-
-      if (playerDirection == "left") {
-        shootAnim.flipX(true);
-      }
-
-      // angles in degrees for the bullets
-      let angles = [-10, -5, 0, 5, 10];
-
-      angles.forEach((angle) => {
-        let bullet = k.add([
-          k.pos(
-            playerDirection == "right" ? gun.pos.x + 17 : gun.pos.x - 17,
-            gun.pos.y
-          ),
-          k.rect(2, 2), // the bullet size
-          k.color(255, 0, 0), // red color
-          k.area({ scale: 1 }),
-          k.outview({ destroy: true }),
-          "bullet",
-          {
-            speed: 300, // bullet speed
-            angle: playerDirection == "right" ? angle : 180 - angle, // reverse the angles for left direction
-          },
-        ]);
-      });
-    }
-  });
+    });
+  }
+});
 
   k.onUpdate("bullet", (b) => {
     const angleInRadians = b.angle * (Math.PI / 180);
@@ -142,21 +176,22 @@ export function gun() {
     );
   });
   k.onCollide("bullet", "enemy", (b, e) => {
-    e.hurt(4);
+    const bulletDamage = moreDamage ? 6 : 4;
+    e.hurt(bulletDamage);
 
     const randomX = k.rand(-10, 10);
     const randomY = k.rand(-10, 10);
 
     const damageText = k.add([
-      k.text(`-4`, {
+      k.text(`-${bulletDamage}`, {
         size: 8,
         font: "sinko",
       }),
-      k.pos(e.pos.x + randomX, e.pos.y + randomY - 20), // Add the random offsets here
+      k.pos(e.pos.x + randomX, e.pos.y + randomY - 20),
       k.lifespan(1),
       k.color(255, 0, 0),
       {
-        value: -4,
+        value: -bulletDamage,
       },
     ]);
 

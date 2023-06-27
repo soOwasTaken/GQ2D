@@ -17,6 +17,8 @@ export function Player() {
       return (6);
     else if (level === 2)
       return (5);
+    else if (level === 3)
+      return (6);
   }
 
   player = k.add([
@@ -26,7 +28,7 @@ export function Player() {
     k.scale(0.96),
     k.solid(),
     k.origin("center"),
-    "player", // this is a tag that we can get using k.get
+    "player",
     k.health(100),
     {
       xp: 0,

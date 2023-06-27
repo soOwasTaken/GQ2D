@@ -10,8 +10,9 @@ import { setFreezingEnabled } from "./spells/freeze";
 import { resetMonsterAI } from "./monster";
 import { earthquake } from "./spells/earthquake";
 import { toggleTripleAttack } from "./staff";
+import { toggleExtraLoad, toggleFastReload, toggleMoreBullets, toggleMoreDamage } from "./gun";
 const urlParams = new URLSearchParams(window.location.search);
-const level = urlParams.get("level") || 1;
+const level = urlParams.has("level") ? parseInt(urlParams.get("level")) : 1;
 
 const levelUpButtons = [];
 // Define the available actions the player can choose from
@@ -81,8 +82,7 @@ if (level === 1) {
       action: decreaseEnemySpeed,
       icon: "enemySpeed",
       available: true,
-      description:
-        "Debuff :\nNew spawning monster are slower",
+      description: "Debuff :\nNew spawning monster are slower",
     },
     {
       id: 3,
@@ -107,6 +107,52 @@ if (level === 1) {
       available: false,
       description:
         "You now shoot 3 ice spikes\nChange on Ice Spike:\nReduced damage by 50%",
+    },
+  ];
+} else if (level == 3) {
+  actions = [
+    {
+      id: 1,
+      action: increasePlayerSpeed,
+      icon: "moveSpeed",
+      available: true,
+      description: "Buff :\nIncrease Player Speed\nMovespeed 120 -> 140",
+    },
+    {
+      id: 2,
+      action: earthquake,
+      icon: "earthquakeIcon",
+      available: true,
+      description:
+        "Every 20seconds :\nA earthquake happen!\nDamage :On all monster -10",
+    },
+    {
+      id: 3,
+      action: toggleExtraLoad,
+      icon: "extraLoadIcon",
+      available: true,
+      description: "You now have a\nextra shoot before\nhaving to reload.",
+    },
+    {
+      id: 4,
+      action: toggleExtraLoad,
+      icon: "fastReloadIcon",
+      available: true,
+      description: "Improved reload speed\nReload speed :\n1s -> 0.7s",
+    },
+    {
+      id: 5,
+      action: toggleMoreBullets,
+      icon: "moreBulletIcon",
+      available: true,
+      description: "You now shoot a\nextra bullet!\nBullet number : 5 -> 6",
+    },
+    {
+      id: 6,
+      action: toggleMoreDamage,
+      icon: "MoreDamageIcon",
+      available: true,
+      description: "Improved\nbullets damages\nBullets damage : 4 -> 6",
     },
   ];
 }

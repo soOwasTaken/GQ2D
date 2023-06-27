@@ -437,6 +437,10 @@ export function loadAssets() {
   k.loadSprite("fireArcIcon", "sprites/icons/FireArc.png");
   k.loadSprite("explosionIcon", "sprites/icons/explosion.png");
   k.loadSprite("moveSpeed", "sprites/icons/movespeed.png");
+  k.loadSprite("extraLoadIcon", "sprites/icons/extraLoadIcon.png");
+  k.loadSprite("fastReloadIcon", "sprites/icons/fastReloadIcon.png");
+  k.loadSprite("moreBulletIcon", "sprites/icons/moreBulletIcon.png");
+  k.loadSprite("MoreDamageIcon", "sprites/icons/MoreDamageIcon.png");
   k.loadSprite("enemySpeed", "sprites/icons/enemyMovespeed.png");
   k.loadSprite("freezeIcon", "sprites/icons/Freezing.png");
   k.loadSprite("earthquakeIcon", "sprites/icons/earthquakeIcon.png");

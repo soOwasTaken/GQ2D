@@ -142,6 +142,7 @@ export function monsterBow(monster) {
             k.rotate(Math.atan2(direction.y, direction.x) * (180 / Math.PI)),
             k.move(direction, arrowSpeedperLevel()),
             k.outview({ destroy: true }),
+            k.lifespan(3.9, { destroy: true }),
             k.area({ width: 8, height: 16 }), // Adjust the arrow's collision area as needed
             "flyingArrow",
           ]);
@@ -162,6 +163,7 @@ export function monsterBow(monster) {
             k.opacity(0.2),
             k.area({ width: 8, height: 8 }),
             k.outview({ destroy: true }),
+            k.lifespan(4, {destroy: true} ),
             "followCircle",
             { hit: false },
           ]);
