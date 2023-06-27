@@ -94,6 +94,29 @@ scene("lose", (score) => {
           .catch((error) => {
             console.error("Error:", error);
           });
+      } else if (level === 3) {
+        fetch("/game-2d/score", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            sessionId: localStorage.getItem("sessionId"),
+            name: playerName,
+            score: playerScore,
+            map: "map3",
+          }),
+        })
+          .then((response) => {
+            // Handle response
+            return response.json();
+          })
+          .then((data) => {
+            // Use data
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+          });
       }
     }
   });
