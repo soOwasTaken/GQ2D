@@ -526,7 +526,7 @@ export function spawnMonsters(timerLabel) {
     } else if (level == 2) {
       extraHealth = 7 * totalMinutes;
     } else if (level == 3) {
-      extraHealth = 12 * totalMinutes;
+      extraHealth = 10 * totalMinutes;
     }
     if (isSpawningAllowed()) {
       if (level == 1) {

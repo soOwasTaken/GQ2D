@@ -90,7 +90,7 @@ if (level === 1) {
       icon: "tornadoIcon",
       available: true,
       description:
-        "Every 5s :\nSpawn Tornadoes on close monster\nDamage :3 to 7, also slow enemy",
+        "Every 5s :\nSpawn Tornadoes on close monster\nDamage :5, also slow enemy",
     },
     {
       id: 4,
@@ -152,7 +152,7 @@ if (level === 1) {
       action: toggleMoreDamage,
       icon: "MoreDamageIcon",
       available: true,
-      description: "Improved\nbullets damages\nBullets damage : 4 -> 6",
+      description: "Improved\nbullets damages\nBullets damage : 6 -> 8",
     },
   ];
 }

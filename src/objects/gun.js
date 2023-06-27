@@ -176,7 +176,7 @@ k.onKeyPress("space", () => {
     );
   });
   k.onCollide("bullet", "enemy", (b, e) => {
-    const bulletDamage = moreDamage ? 6 : 4;
+    const bulletDamage = moreDamage ? 8 : 6;
     e.hurt(bulletDamage);
 
     const randomX = k.rand(-10, 10);
