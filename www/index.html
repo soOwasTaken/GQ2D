@@ -1,20 +1,28 @@
 <!DOCTYPE html>
 <html>
-<head>
-	<title>GQ</title>
-	<style>
-		body {
-		  background-color: black;
-		  margin: 0;
-		  overflow: hidden;
-		}
-	  </style>
-</head>
-<body>
-	<div id="gameover-screen" style="display: none;">
-		<input id="player-name" type="text" placeholder="Enter your name">
-		<button id="save-score">Save Score</button>
-	</div>
-	<script src="main.js"></script>
-</body>
+  <head>
+    <title>GQ</title>
+    <style>
+      body {
+        background-color: black;
+        margin: 0;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="gameover-screen" style="display: none">
+      <input id="player-name" type="text" placeholder="Enter your name" />
+      <button id="save-score">Save Score</button>
+    </div>
+
+    <audio id="themeSound" src="./saw-theme-song.mp3" loop></audio>
+    <script>
+      const themeSound = document.getElementById("themeSound");
+
+      themeSound.play();
+      themeSound.volume = 0.05;
+    </script>
+    <script src="main.js"></script>
+  </body>
 </html>
