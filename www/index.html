@@ -27,6 +27,8 @@
       themeSound.play();
       document.addEventListener("keydown", function () {
         themeSound.play();
+        if (event.code === "KeyP" && !themeSound.paused) themeSound.pause();
+        if (event.code === "KeyP" && !themeSound.paused) themeSound.play();
       });
       themeSound.volume = 0.08;
     </script>
