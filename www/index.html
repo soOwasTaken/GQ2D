@@ -25,7 +25,10 @@
       const themeSound = document.getElementById("themeSound");
 
       themeSound.play();
-      themeSound.volume = 0.05;
+      document.addEventListener("keydown", function () {
+        themeSound.play();
+      });
+      themeSound.volume = 0.08;
     </script>
     <script src="main.js"></script>
   </body>
